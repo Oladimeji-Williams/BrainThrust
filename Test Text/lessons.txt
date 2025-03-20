@@ -1,0 +1,15 @@
+
+    { "title": "Addition and Subtraction", "content": "This lesson covers basic addition and subtraction of whole numbers.", "videoUrl": "https://example.com/video1"}
+    { "title": "Multiplication and Division", "content": "This lesson explains how multiplication and division work.", "videoUrl": "https://example.com/video2"}
+    { "title": "Fractions and Decimals", "content": "Learn how to work with fractions and decimals.", "videoUrl": "https://example.com/video3" }
+    { "title": "Order of Operations", "content": "Understand how to prioritize operations in math expressions.", "videoUrl": "https://example.com/video4"}
+
+    { "title": "Understanding Variables", "content": "Learn what variables are and how to use them.", "videoUrl": "https://example.com/video5"}
+    { "title": "Solving Linear Equations", "content": "Step-by-step guide to solving linear equations.", "videoUrl": "https://example.com/video6"}
+    { "title": "Graphing Equations", "content": "Understand how to graph equations and interpret results.", "videoUrl": "https://example.com/video7"}
+    { "title": "Inequalities", "content": "Learn about inequalities and how to graph them.", "videoUrl": "https://example.com/video8"}
+
+    { "title": "Types of Angles", "content": "Identify different types of angles and their properties.", "videoUrl": "https://example.com/video9"}
+    { "title": "Triangles and Their Properties", "content": "Discover the properties of various triangles.", "videoUrl": "https://example.com/video10"}
+    { "title": "Perimeter and Area", "content": "Learn formulas for calculating perimeter and area.", "videoUrl": "https://example.com/video11"}
+    { "title": "Volume and Surface Area", "content": "Explore volume and surface area calculations.", "videoUrl": "https://example.com/video12"}

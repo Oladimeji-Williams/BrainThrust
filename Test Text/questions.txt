@@ -1,0 +1,46 @@
+
+  {
+    "questionText": "What is the capital of France?",
+    "options": [
+      { "text": "Berlin" },
+      { "text": "Madrid" },
+      { "text": "Paris" }
+    ],
+    "correctOption": "Paris"
+  }
+  {
+    "questionText": "Which planet is known as the Red Planet?",
+    "options": [
+      { "text": "Earth" },
+      { "text": "Mars" },
+      { "text": "Jupiter" }
+    ],
+    "correctOption": "Mars"
+  }
+  {
+    "questionText": "What is the largest ocean on Earth?",
+    "options": [
+      { "text": "Atlantic Ocean" },
+      { "text": "Indian Ocean" },
+      { "text": "Pacific Ocean" }
+    ],
+    "correctOption": "Pacific Ocean"
+  }
+  {
+    "questionText": "Who wrote 'Romeo and Juliet'?",
+    "options": [
+      { "text": "Charles Dickens" },
+      { "text": "William Shakespeare" },
+      { "text": "Mark Twain" }
+    ],
+    "correctOption": "William Shakespeare"
+  }
+  {
+    "questionText": "What is the square root of 64?",
+    "options": [
+      { "text": "6" },
+      { "text": "7" },
+      { "text": "8" }
+    ],
+    "correctOption": "8"
+  }

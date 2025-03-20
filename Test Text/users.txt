@@ -1,0 +1,38 @@
+{
+  "firstName": "Oladimeji",
+  "lastName": "Williams",
+  "email": "oladimejiwilliams@outlook.com",
+  "password": "Oladimeji@123"
+}
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "password": "SecurePass@123"
+}
+
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane.smith@example.com",
+  "password": "P@ssw0rd!456"
+}
+
+
+{
+  "firstName": "Alice",
+  "lastName": "Johnson",
+  "email": "alice.johnson@example.com",
+  "password": "Alice@789"
+}
+{
+  "firstName": "Segun",
+  "lastName": "Oyegunsen",
+  "email": "segun.oyegunsen@gmail.com",
+  "password": "Segun.123"
+}
+
+application security:
+hwhich hosting service: render
+error logs exposed to backend and frontend: 
+injecting malicious requests:

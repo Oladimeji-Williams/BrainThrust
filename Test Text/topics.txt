@@ -1,0 +1,55 @@
+
+    {
+        "title": "Numbers and Operations",
+        "description": "Understanding basic arithmetic",
+        "subjectID": 1
+    }
+    {
+     
+        "title": "Algebra Basics",
+        "description": "Solving equations and inequalities",
+        "subjectID": 1
+    }
+    {
+     
+        "title": "Geometry Essentials",
+        "description": "Shapes, angles, and measurements",
+        "subjectID": 1
+    }
+    {
+     
+        "title": "Grammar Fundamentals",
+        "description": "Nouns, verbs, adjectives, and sentence structure",
+        "subjectID": 2
+    }
+    {
+     
+        "title": "Reading Comprehension",
+        "description": "Techniques to understand and analyze texts",
+        "subjectID": 2
+    }
+    {
+     
+        "title": "Writing Skills",
+        "description": "Crafting clear and effective essays",
+        "subjectID": 2
+    }
+    {
+     
+        "title": "World History",
+        "description": "Key events that shaped civilizations",
+        "subjectID": 3
+    }
+    {
+     
+        "title": "Geography",
+        "description": "Continents, countries, and natural features",
+        "subjectID": 3
+    }
+    {
+     
+        "title": "Science and Technology",
+        "description": "Breakthroughs in physics, chemistry, and biology",
+        "subjectID": 3
+    }
+

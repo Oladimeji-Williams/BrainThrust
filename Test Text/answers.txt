@@ -1,0 +1,17 @@
+{
+  "quizId": 1,
+  "answers": [
+    {
+      "questionId": 101,
+      "selectedOptionId": 202
+    },
+    {
+      "questionId": 102,
+      "selectedOptionId": 205
+    },
+    {
+      "questionId": 103,
+      "selectedOptionId": 209
+    }
+  ]
+}

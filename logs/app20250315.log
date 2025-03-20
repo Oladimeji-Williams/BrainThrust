@@ -1,0 +1,467 @@
+2025-03-15 20:01:18.191 +01:00 [INF] ✅ Application started successfully.
+2025-03-15 20:01:18.570 +01:00 [INF] User profile is available. Using 'C:\Users\HP\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-03-15 20:01:18.710 +01:00 [INF] Now listening on: http://localhost:5073
+2025-03-15 20:01:18.718 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-15 20:01:18.721 +01:00 [INF] Hosting environment: Development
+2025-03-15 20:01:18.727 +01:00 [INF] Content root path: C:\Users\HP\Desktop\BrainThrust
+2025-03-15 20:02:02.946 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5073/swagger/index.html - null null
+2025-03-15 20:02:03.345 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5073/swagger/index.html - 200 null text/html;charset=utf-8 401.6429ms
+2025-03-15 20:02:03.523 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5073/swagger/v1/swagger.json - null null
+2025-03-15 20:02:03.848 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5073/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 326.0109ms
+2025-03-15 20:03:34.737 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5073/api/enrollments?includeUserName=true - null null
+2025-03-15 20:03:34.767 +01:00 [WRN] Failed to determine the https port for redirect.
+2025-03-15 20:03:34.979 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (Admin)
+2025-03-15 20:03:34.994 +01:00 [INF] AuthenticationScheme: Bearer was challenged.
+2025-03-15 20:03:34.998 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5073/api/enrollments?includeUserName=true - 401 0 null 261.3878ms
+2025-03-15 20:05:01.693 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5073/api/users/login - application/json 131
+2025-03-15 20:05:01.739 +01:00 [WRN] 🚨 JWT Authentication Failed!
+2025-03-15 20:05:01.747 +01:00 [INF] Executing endpoint 'BrainThrust.src.Controllers.UserController.Login (BrainThrust)'
+2025-03-15 20:05:01.821 +01:00 [INF] Route matched with {action = "Login", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(BrainThrust.src.Models.Dtos.UserLoginDto) on controller BrainThrust.src.Controllers.UserController (BrainThrust).
+2025-03-15 20:05:02.302 +01:00 [INF] Login attempt for email: oladimejiwilliams@outlook.com
+2025-03-15 20:05:03.851 +01:00 [WRN] The foreign key property 'Question.CorrectAnswerId1' was created in shadow state because a conflicting property with the simple name 'CorrectAnswerId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2025-03-15 20:05:06.721 +01:00 [INF] Executed DbCommand (124ms) [Parameters=[@__email_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Address], [u].[Created], [u].[DateDeleted], [u].[Email], [u].[FirstName], [u].[IsDeleted], [u].[LastName], [u].[Modified], [u].[PasswordHash], [u].[PasswordResetToken], [u].[PasswordSalt], [u].[PhoneNumber], [u].[Role], [u].[TokenExpiry]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND LOWER([u].[Email]) = @__email_0
+2025-03-15 20:05:06.976 +01:00 [WRN] Login failed: Incorrect password for user oladimejiwilliams@outlook.com.
+2025-03-15 20:05:06.994 +01:00 [INF] Executing UnauthorizedObjectResult, writing value of type 'System.String'.
+2025-03-15 20:05:07.005 +01:00 [INF] Executed action BrainThrust.src.Controllers.UserController.Login (BrainThrust) in 5170.8742ms
+2025-03-15 20:05:07.013 +01:00 [INF] Executed endpoint 'BrainThrust.src.Controllers.UserController.Login (BrainThrust)'
+2025-03-15 20:05:07.033 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5073/api/users/login - 401 null text/plain; charset=utf-8 5340.1874ms
+2025-03-15 20:05:15.682 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5073/api/users/login - application/json 131
+2025-03-15 20:05:15.695 +01:00 [WRN] 🚨 JWT Authentication Failed!
+2025-03-15 20:05:15.697 +01:00 [INF] Executing endpoint 'BrainThrust.src.Controllers.UserController.Login (BrainThrust)'
+2025-03-15 20:05:15.702 +01:00 [INF] Route matched with {action = "Login", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(BrainThrust.src.Models.Dtos.UserLoginDto) on controller BrainThrust.src.Controllers.UserController (BrainThrust).
+2025-03-15 20:05:15.714 +01:00 [INF] Login attempt for email: oladimejiwilliams@outlook.com
+2025-03-15 20:05:15.787 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[@__email_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Address], [u].[Created], [u].[DateDeleted], [u].[Email], [u].[FirstName], [u].[IsDeleted], [u].[LastName], [u].[Modified], [u].[PasswordHash], [u].[PasswordResetToken], [u].[PasswordSalt], [u].[PhoneNumber], [u].[Role], [u].[TokenExpiry]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND LOWER([u].[Email]) = @__email_0
+2025-03-15 20:05:15.875 +01:00 [INF] User oladimejiwilliams@outlook.com successfully logged in.
+2025-03-15 20:05:15.880 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType2`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-15 20:05:15.915 +01:00 [INF] Executed action BrainThrust.src.Controllers.UserController.Login (BrainThrust) in 207.3663ms
+2025-03-15 20:05:15.920 +01:00 [INF] Executed endpoint 'BrainThrust.src.Controllers.UserController.Login (BrainThrust)'
+2025-03-15 20:05:15.925 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5073/api/users/login - 200 null application/json; charset=utf-8 242.7946ms
+2025-03-15 20:06:08.921 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5073/api/enrollments?includeUserName=true - null null
+2025-03-15 20:06:09.119 +01:00 [INF] Executing endpoint 'BrainThrust.src.Controllers.EnrollmentController.GetEnrollments (BrainThrust)'
+2025-03-15 20:06:09.169 +01:00 [INF] Route matched with {action = "GetEnrollments", controller = "Enrollment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[BrainThrust.src.Models.Dtos.GetEnrollmentDto]]] GetEnrollments(Boolean) on controller BrainThrust.src.Controllers.EnrollmentController (BrainThrust).
+2025-03-15 20:06:09.261 +01:00 [INF] Admin fetching all active enrollments.
+2025-03-15 20:06:09.623 +01:00 [ERR] Failed executing DbCommand (41ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [e].[UserID], [e].[SubjectID], [s0].[Title], [u0].[FirstName], [u0].[LastName]
+FROM [Enrollments] AS [e]
+INNER JOIN (
+    SELECT [s].[Id], [s].[Title]
+    FROM [Subjects] AS [s]
+    WHERE [s].[IsDeleted] = CAST(0 AS bit)
+) AS [s0] ON [e].[SubjectID] = [s0].[Id]
+INNER JOIN (
+    SELECT [u].[Id], [u].[FirstName], [u].[LastName]
+    FROM [Users] AS [u]
+    WHERE [u].[IsDeleted] = CAST(0 AS bit)
+) AS [u0] ON [e].[UserID] = [u0].[Id]
+WHERE [e].[IsDeleted] = CAST(0 AS bit)
+2025-03-15 20:06:09.735 +01:00 [ERR] An exception occurred while iterating over the results of a query for context type 'BrainThrust.src.Data.ApplicationDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Subjects'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Subjects'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+2025-03-15 20:06:09.769 +01:00 [INF] Executed action BrainThrust.src.Controllers.EnrollmentController.GetEnrollments (BrainThrust) in 578.7766ms
+2025-03-15 20:06:09.774 +01:00 [INF] Executed endpoint 'BrainThrust.src.Controllers.EnrollmentController.GetEnrollments (BrainThrust)'
+2025-03-15 20:06:09.778 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Subjects'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at BrainThrust.src.Controllers.EnrollmentController.GetEnrollments(Boolean includeUserName) in C:\Users\HP\Desktop\BrainThrust\src\Controllers\EnrollmentController.cs:line 42
+   at lambda_method142(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Program.<>c.<<<Main>$>b__0_6>d.MoveNext() in C:\Users\HP\Desktop\BrainThrust\Program.cs:line 109
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+2025-03-15 20:06:09.910 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5073/api/enrollments?includeUserName=true - 500 null text/plain; charset=utf-8 987.2316ms
+2025-03-15 20:06:37.278 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5073/api/enrollments/user - null null
+2025-03-15 20:06:37.309 +01:00 [INF] Executing endpoint 'BrainThrust.src.Controllers.EnrollmentController.GetUserEnrollments (BrainThrust)'
+2025-03-15 20:06:37.324 +01:00 [INF] Route matched with {action = "GetUserEnrollments", controller = "Enrollment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[BrainThrust.src.Models.Dtos.GetEnrollmentDto]]] GetUserEnrollments() on controller BrainThrust.src.Controllers.EnrollmentController (BrainThrust).
+2025-03-15 20:06:37.375 +01:00 [INF] Executed DbCommand (23ms) [Parameters=[@__email_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Address], [u].[Created], [u].[DateDeleted], [u].[Email], [u].[FirstName], [u].[IsDeleted], [u].[LastName], [u].[Modified], [u].[PasswordHash], [u].[PasswordResetToken], [u].[PasswordSalt], [u].[PhoneNumber], [u].[Role], [u].[TokenExpiry]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[Email] = @__email_0
+2025-03-15 20:06:37.391 +01:00 [INF] Fetching enrollments for user ID 1
+2025-03-15 20:06:37.420 +01:00 [ERR] Failed executing DbCommand (4ms) [Parameters=[@__user_Id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [e].[UserID], [e].[SubjectID], [s0].[Title] AS [SubjectTitle]
+FROM [Enrollments] AS [e]
+INNER JOIN (
+    SELECT [s].[Id], [s].[Title]
+    FROM [Subjects] AS [s]
+    WHERE [s].[IsDeleted] = CAST(0 AS bit)
+) AS [s0] ON [e].[SubjectID] = [s0].[Id]
+WHERE [e].[IsDeleted] = CAST(0 AS bit) AND [e].[UserID] = @__user_Id_0 AND [e].[IsDeleted] = CAST(0 AS bit)
+2025-03-15 20:06:37.431 +01:00 [ERR] An exception occurred while iterating over the results of a query for context type 'BrainThrust.src.Data.ApplicationDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Subjects'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Subjects'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+2025-03-15 20:06:37.459 +01:00 [INF] Executed action BrainThrust.src.Controllers.EnrollmentController.GetUserEnrollments (BrainThrust) in 128.6155ms
+2025-03-15 20:06:37.466 +01:00 [INF] Executed endpoint 'BrainThrust.src.Controllers.EnrollmentController.GetUserEnrollments (BrainThrust)'
+2025-03-15 20:06:37.470 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Subjects'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at BrainThrust.src.Controllers.EnrollmentController.GetUserEnrollments() in C:\Users\HP\Desktop\BrainThrust\src\Controllers\EnrollmentController.cs:line 74
+   at lambda_method154(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Program.<>c.<<<Main>$>b__0_6>d.MoveNext() in C:\Users\HP\Desktop\BrainThrust\Program.cs:line 109
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+2025-03-15 20:06:37.515 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5073/api/enrollments/user - 500 null text/plain; charset=utf-8 236.5388ms
+2025-03-15 20:07:04.258 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5073/api/enrollments/user/subject/1 - null null
+2025-03-15 20:07:04.269 +01:00 [INF] Executing endpoint 'BrainThrust.src.Controllers.EnrollmentController.IsUserEnrolledInCubject (BrainThrust)'
+2025-03-15 20:07:04.307 +01:00 [INF] Route matched with {action = "IsUserEnrolledInCubject", controller = "Enrollment"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult] IsUserEnrolledInCubject(Int32) on controller BrainThrust.src.Controllers.EnrollmentController (BrainThrust).
+2025-03-15 20:07:04.323 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__email_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Address], [u].[Created], [u].[DateDeleted], [u].[Email], [u].[FirstName], [u].[IsDeleted], [u].[LastName], [u].[Modified], [u].[PasswordHash], [u].[PasswordResetToken], [u].[PasswordSalt], [u].[PhoneNumber], [u].[Role], [u].[TokenExpiry]
+FROM [Users] AS [u]
+WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[Email] = @__email_0
+2025-03-15 20:07:04.332 +01:00 [INF] Checking if user 1 is enrolled in cubject 1
+2025-03-15 20:07:04.377 +01:00 [ERR] Failed executing DbCommand (2ms) [Parameters=[@__user_Id_0='?' (DbType = Int32), @__subjectID_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Enrollments] AS [e]
+        WHERE [e].[IsDeleted] = CAST(0 AS bit) AND [e].[UserID] = @__user_Id_0 AND [e].[SubjectID] = @__subjectID_1 AND [e].[IsDeleted] = CAST(0 AS bit)) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-15 20:07:04.389 +01:00 [ERR] An exception occurred while iterating over the results of a query for context type 'BrainThrust.src.Data.ApplicationDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SubjectID'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:207,State:1,Class:16
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SubjectID'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:207,State:1,Class:16
+2025-03-15 20:07:04.417 +01:00 [INF] Executed action BrainThrust.src.Controllers.EnrollmentController.IsUserEnrolledInCubject (BrainThrust) in 104.7038ms
+2025-03-15 20:07:04.424 +01:00 [INF] Executed endpoint 'BrainThrust.src.Controllers.EnrollmentController.IsUserEnrolledInCubject (BrainThrust)'
+2025-03-15 20:07:04.428 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SubjectID'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at BrainThrust.src.Controllers.EnrollmentController.IsUserEnrolledInCubject(Int32 subjectID) in C:\Users\HP\Desktop\BrainThrust\src\Controllers\EnrollmentController.cs:line 110
+   at lambda_method176(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Program.<>c.<<<Main>$>b__0_6>d.MoveNext() in C:\Users\HP\Desktop\BrainThrust\Program.cs:line 109
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:207,State:1,Class:16
+2025-03-15 20:07:04.473 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5073/api/enrollments/user/subject/1 - 500 null text/plain; charset=utf-8 214.9227ms
+2025-03-15 20:07:23.720 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost:5073/api/progress/lesson/1/complete?userId=1 - null 0
+2025-03-15 20:07:23.726 +01:00 [INF] Executing endpoint 'BrainThrust.src.Controllers.LearningProgressController.MarkLessonCompleted (BrainThrust)'
+2025-03-15 20:07:23.731 +01:00 [INF] Route matched with {action = "MarkLessonCompleted", controller = "LearningProgress"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult MarkLessonCompleted(Int32, Int32) on controller BrainThrust.src.Controllers.LearningProgressController (BrainThrust).
+2025-03-15 20:07:23.743 +01:00 [INF] Received request to mark lesson 1 as completed for user 1
+2025-03-15 20:07:23.799 +01:00 [INF] Executed DbCommand (11ms) [Parameters=[@__lessonId_0='?' (DbType = Int32), @__userId_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [l].[Id], [l].[Created], [l].[DateCompleted], [l].[DateDeleted], [l].[IsCompleted], [l].[IsDeleted], [l].[LessonID], [l].[Modified], [l].[UserID]
+FROM [LessonProgresses] AS [l]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[LessonID] = @__lessonId_0 AND [l].[UserID] = @__userId_1
+2025-03-15 20:07:23.984 +01:00 [ERR] Failed executing DbCommand (26ms) [Parameters=[@__lessonId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [l].[Id], [l].[Content], [l].[Created], [l].[DateDeleted], [l].[IsDeleted], [l].[Modified], [l].[Title], [l].[TopicID], [l].[VideoUrl], [t0].[Id], [t0].[Created], [t0].[DateDeleted], [t0].[Description], [t0].[IsDeleted], [t0].[Modified], [t0].[SubjectID], [t0].[Title]
+FROM [Lessons] AS [l]
+INNER JOIN (
+    SELECT [t].[Id], [t].[Created], [t].[DateDeleted], [t].[Description], [t].[IsDeleted], [t].[Modified], [t].[SubjectID], [t].[Title]
+    FROM [Topics] AS [t]
+    WHERE [t].[IsDeleted] = CAST(0 AS bit)
+) AS [t0] ON [l].[TopicID] = [t0].[Id]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[Id] = @__lessonId_0
+2025-03-15 20:07:24.018 +01:00 [ERR] An exception occurred while iterating over the results of a query for context type 'BrainThrust.src.Data.ApplicationDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Topics'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at Microsoft.Data.SqlClient.SqlDataReader.get_MetaData()
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean isAsync, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Topics'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at Microsoft.Data.SqlClient.SqlDataReader.get_MetaData()
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean isAsync, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+2025-03-15 20:07:24.080 +01:00 [ERR] Error occurred while marking lesson 1 as completed for user 1
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Topics'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at Microsoft.Data.SqlClient.SqlDataReader.get_MetaData()
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean isAsync, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+   at System.Linq.Enumerable.TryGetSingle[TSource](IEnumerable`1 source, Boolean& found)
+   at lambda_method311(Closure, QueryContext)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteCore[TResult](Expression query, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.Execute[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.Execute[TResult](Expression expression)
+   at BrainThrust.src.Services.LearningProgressService.CheckMopicCompletion(Int32 lessonId, Int32 userId) in C:\Users\HP\Desktop\BrainThrust\src\Services\LearningProgressService.cs:line 67
+   at BrainThrust.src.Services.LearningProgressService.MarkLessonCompleted(Int32 lessonId, Int32 userId) in C:\Users\HP\Desktop\BrainThrust\src\Services\LearningProgressService.cs:line 42
+   at BrainThrust.src.Controllers.LearningProgressController.MarkLessonCompleted(Int32 lessonId, Int32 userId) in C:\Users\HP\Desktop\BrainThrust\src\Controllers\LearningProgressController.cs:line 34
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+2025-03-15 20:07:24.107 +01:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType0`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-15 20:07:24.115 +01:00 [INF] Executed action BrainThrust.src.Controllers.LearningProgressController.MarkLessonCompleted (BrainThrust) in 376.9698ms
+2025-03-15 20:07:24.118 +01:00 [INF] Executed endpoint 'BrainThrust.src.Controllers.LearningProgressController.MarkLessonCompleted (BrainThrust)'
+2025-03-15 20:07:24.121 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost:5073/api/progress/lesson/1/complete?userId=1 - 500 null application/json; charset=utf-8 400.1842ms
+2025-03-15 20:07:39.013 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:5073/api/lessons/1 - null null
+2025-03-15 20:07:39.018 +01:00 [INF] Executing endpoint 'BrainThrust.src.Controllers.LessonController.GetLesson (BrainThrust)'
+2025-03-15 20:07:39.030 +01:00 [INF] Route matched with {action = "GetLesson", controller = "Lesson"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[BrainThrust.src.Models.Dtos.GetLessonDto]] GetLesson(Int32) on controller BrainThrust.src.Controllers.LessonController (BrainThrust).
+2025-03-15 20:07:39.042 +01:00 [INF] Fetching lesson with ID 1
+2025-03-15 20:07:39.073 +01:00 [ERR] Failed executing DbCommand (3ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [l].[Id], [l].[Content], [l].[Created], [l].[DateDeleted], [l].[IsDeleted], [l].[Modified], [l].[Title], [l].[TopicID], [l].[VideoUrl], [t0].[Id], [t0].[Created], [t0].[DateDeleted], [t0].[Description], [t0].[IsDeleted], [t0].[Modified], [t0].[SubjectID], [t0].[Title]
+FROM [Lessons] AS [l]
+INNER JOIN (
+    SELECT [t].[Id], [t].[Created], [t].[DateDeleted], [t].[Description], [t].[IsDeleted], [t].[Modified], [t].[SubjectID], [t].[Title]
+    FROM [Topics] AS [t]
+    WHERE [t].[IsDeleted] = CAST(0 AS bit)
+) AS [t0] ON [l].[TopicID] = [t0].[Id]
+WHERE [l].[IsDeleted] = CAST(0 AS bit) AND [l].[Id] = @__id_0
+2025-03-15 20:07:39.090 +01:00 [ERR] An exception occurred while iterating over the results of a query for context type 'BrainThrust.src.Data.ApplicationDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Topics'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Topics'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+2025-03-15 20:07:39.117 +01:00 [ERR] Error fetching lesson with ID 1
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Topics'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at BrainThrust.src.Controllers.LessonController.GetLesson(Int32 id) in C:\Users\HP\Desktop\BrainThrust\src\Controllers\LessonController.cs:line 92
+ClientConnectionId:41fb3549-d4dd-4e64-b328-44e943ea63a8
+Error Number:208,State:1,Class:16
+2025-03-15 20:07:39.139 +01:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType0`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-03-15 20:07:39.146 +01:00 [INF] Executed action BrainThrust.src.Controllers.LessonController.GetLesson (BrainThrust) in 109.0572ms
+2025-03-15 20:07:39.150 +01:00 [INF] Executed endpoint 'BrainThrust.src.Controllers.LessonController.GetLesson (BrainThrust)'
+2025-03-15 20:07:39.153 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:5073/api/lessons/1 - 500 null application/json; charset=utf-8 140.7714ms

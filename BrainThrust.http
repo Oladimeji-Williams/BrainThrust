@@ -1,0 +1,6 @@
+@BrainThrust_HostAddress = http://localhost:5073
+
+GET {{BrainThrust_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

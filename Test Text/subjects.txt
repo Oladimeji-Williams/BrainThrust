@@ -1,0 +1,13 @@
+
+    {
+        "title": "Mathematics",
+        "description": "Explore numbers, algebra, geometry, and advanced math concepts."
+    }
+    {
+        "title": "English Language",
+        "description": "Improve grammar, vocabulary, writing, and comprehension skills."
+    }
+    {
+        "title": "General Knowledge",
+        "description": "Expand your awareness of science, history, geography, and current affairs."
+    }
