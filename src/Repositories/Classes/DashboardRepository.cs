@@ -17,6 +17,9 @@ namespace BrainThrust.src.Repositories.Classes
         public async Task<int> GetActiveUsers() => await _context.Users.Where(u => !u.IsDeleted).CountAsync();
         public async Task<int> GetNewUsers() => await _context.Users.Where(u => u.Created >= DateTime.UtcNow.AddDays(-30)).CountAsync();
         public async Task<int> GetTotalSubjects() => await _context.Subjects.CountAsync();
+        public async Task<int> GetTotalTopics() => await _context.Topics.CountAsync();
+        public async Task<int> GetTotalLessons() => await _context.Lessons.CountAsync();
+        public async Task<int> GetTotalQuizzes() => await _context.Quizzes.CountAsync();
 
 
         public async Task<List<MostEnrolledSubjectDto>> GetMostEnrolledSubjects()
@@ -50,7 +53,6 @@ namespace BrainThrust.src.Repositories.Classes
             return quizAttempts;
         }
 
-
         /// <summary>
         /// Fetches the top scorers from quiz attempts.
         /// </summary>
@@ -70,7 +72,37 @@ namespace BrainThrust.src.Repositories.Classes
 
             Console.WriteLine($"Fetched {scorers.Count} top scorers.");
             return scorers;
+        }
 
+
+
+
+        public async Task<int> GetCompletedSubjects(int userId)
+        {
+            return await _context.SubjectProgresses
+                .Where(us => us.UserId == userId && us.IsCompleted)
+                .CountAsync();
+        }
+
+        public async Task<int> GetCompletedTopics(int userId)
+        {
+            return await _context.TopicProgresses
+                .Where(ut => ut.UserId == userId && ut.IsCompleted)
+                .CountAsync();
+        }
+
+        public async Task<int> GetCompletedLessons(int userId)
+        {
+            return await _context.LessonProgresses
+                .Where(ul => ul.UserId == userId && ul.IsCompleted)
+                .CountAsync();
+        }
+
+        public async Task<int> GetCompletedQuizzes(int userId)
+        {
+            return await _context.UserQuizAttempts
+                .Where(uq => uq.UserId == userId && uq.IsPassed)
+                .CountAsync();
         }
 
     }

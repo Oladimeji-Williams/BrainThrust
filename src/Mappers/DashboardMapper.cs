@@ -8,9 +8,10 @@ namespace BrainThrust.src.Mappers
             int totalUsers, int activeUsers, int newUsers,
             int totalSubjects, int totalTopics, int totalLessons, int totalQuizzes,
             int completedSubjects, int completedTopics, int completedLessons, int completedQuizzes,
-            int activeLearners, List<(int SubjectId, int Enrollments)> mostEnrolledSubjects,
+            int activeLearners, 
+            List<(int SubjectId, int Enrollments)> mostEnrolledSubjects,
             List<(int UserId, int QuizId, int TotalScore, bool IsPassed, DateTime Created)> recentQuizAttempts,
-            List<(int UserId, int TotalScore)> topScorers)
+            List<(int UserId, double TotalScore)> topScorers)
         {
             return new DashboardDto
             {
@@ -34,31 +35,14 @@ namespace BrainThrust.src.Mappers
                     CompletedLessons = completedLessons,
                     CompletedQuizzes = completedQuizzes
                 },
-                
                 Engagement = new EngagementStatsDto
                 {
                     ActiveLearners = activeLearners,
-                    MostEnrolledSubjects = mostEnrolledSubjects
-                        .Select(s => new MostEnrolledSubjectDto { SubjectId = s.SubjectId, Enrollments = s.Enrollments })
-                        .ToList()
-                },
-                QuizPerformance = new QuizPerformanceDto
-                {
-                    RecentQuizAttempts = recentQuizAttempts
-                        .Select(q => new RecentQuizAttemptDto
-                        {
-                            UserId = q.UserId,
-                            QuizId = q.QuizId,
-                            TotalScore = q.TotalScore,
-                            IsPassed = q.IsPassed,
-                            Created = q.Created
-                        }).ToList(),
-                    TopScorers = topScorers
-                        .Select(q => new TopScorerDto
-                        {
-                            UserId = q.UserId,
-                            TotalScore = q.TotalScore
-                        }).ToList()
+                    MostEnrolledSubjects = mostEnrolledSubjects?.Select(s => new MostEnrolledSubjectDto 
+                    { 
+                        SubjectId = s.SubjectId, 
+                        Enrollments = s.Enrollments 
+                    }).ToList() ?? new List<MostEnrolledSubjectDto>()
                 }
             };
         }

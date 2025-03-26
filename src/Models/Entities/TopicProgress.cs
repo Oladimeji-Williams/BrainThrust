@@ -7,8 +7,10 @@ namespace BrainThrust.src.Models.Entities
     {
         [Required]
         public int TopicId { get; set; }
+        
         [Required]
         public int UserId { get; set; }
+
         public bool IsCompleted { get; set; } = false;
         public DateTime? DateCompleted { get; set; }
 
@@ -16,7 +18,6 @@ namespace BrainThrust.src.Models.Entities
         public Topic? Topic { get; set; }
 
         [ForeignKey(nameof(UserId))]
-        [Required]
         public User? User { get; set; }
     }
 }

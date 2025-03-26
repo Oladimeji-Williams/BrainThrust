@@ -2,7 +2,7 @@ namespace BrainThrust.src.Dtos.UserDtos
 {
     public class ForgotPasswordDto
     {
-        public required string Email { get; set; }
+        public string? Email { get; set; }
     }
 
 }

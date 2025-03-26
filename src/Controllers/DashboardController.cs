@@ -1,6 +1,7 @@
 using BrainThrust.src.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BrainThrust_API.Controllers
 {
@@ -19,11 +20,11 @@ namespace BrainThrust_API.Controllers
         /// Fetches overall statistics for the dashboard.
         /// </summary>
         /// <returns>DashboardDTO with user, content, progress, engagement, and quiz stats.</returns>
-        [Authorize()]
+        [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetDashboardData()
+        public async Task<IActionResult> GetDashboard()
         {
-            var dashboardData = await _dashboardService.GetDashboardData();
+            var dashboardData = await _dashboardService.GetDashboardData(User);
             return Ok(dashboardData);
         }
     }

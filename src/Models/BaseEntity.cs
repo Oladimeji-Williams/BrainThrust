@@ -10,11 +10,8 @@ namespace BrainThrust.src.Models
         public int Id { get; set; }
         [Required]
         public DateTime Created { get; set; } = DateTime.UtcNow;
-        [Required]
         public DateTime? Modified { get; set; }
-        [Required]
         public bool IsDeleted { get; set; } = false;
-        [Required]
         public DateTime? DateDeleted { get; set; }
     }
 

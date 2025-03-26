@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BrainThrust")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fedf98695ea3437efd35379b62ff3fc3e20cce0c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c85b41c8552f5780b47c33659bb8785df6db65d9")]
 [assembly: System.Reflection.AssemblyProductAttribute("BrainThrust")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BrainThrust")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

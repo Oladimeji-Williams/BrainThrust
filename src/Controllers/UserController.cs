@@ -115,7 +115,7 @@ namespace BrainThrust.src.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
-            var email = userLoginDto.Email.ToLower();
+            var email = userLoginDto?.Email?.ToLower();
             _logger.LogInformation("Login attempt for email: {Email}", email);
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
