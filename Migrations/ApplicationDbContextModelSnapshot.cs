@@ -188,7 +188,7 @@ namespace BrainThrust.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CorrectOptionId")
+                    b.Property<int>("CorrectOptionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
@@ -210,6 +210,9 @@ namespace BrainThrust.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

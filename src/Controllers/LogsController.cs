@@ -1,8 +1,6 @@
+using BrainThrust.src.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
 
 namespace BrainThrust.src.Controllers
 {
@@ -10,10 +8,12 @@ namespace BrainThrust.src.Controllers
     [Route("api/logs")]
     public class LogsController : ControllerBase
     {
+        private readonly ILogService _logService;
         private readonly ILogger<LogsController> _logger;
 
-        public LogsController(ILogger<LogsController> logger)
+        public LogsController(ILogService logService, ILogger<LogsController> logger)
         {
+            _logService = logService;
             _logger = logger;
         }
 
@@ -25,49 +25,28 @@ namespace BrainThrust.src.Controllers
         [HttpGet]
         public IActionResult ListLogFiles()
         {
-            string logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
-
-            if (!Directory.Exists(logDirectory))
-            {
-                _logger.LogWarning("Log directory not found: {Path}", logDirectory);
-                return NotFound(new { message = "Log directory does not exist." });
-            }
-
-            var files = Directory.GetFiles(logDirectory);
-            var fileNames = Array.ConvertAll(files, Path.GetFileName);
-
-            return Ok(fileNames);
+            var logFiles = _logService.GetLogFiles();
+            return Ok(logFiles);
         }
 
         /// <summary>
         /// Download a specific log file.
         /// Example: GET /api/logs/log-2025-03-10.txt
         /// </summary>
+        [Authorize(Roles = "Admin")]
         [HttpGet("{filename}")]
-        public IActionResult DownloadLogFile(string filename)
+        public async Task<IActionResult> DownloadLogFile(string filename)
         {
-            string logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
-            string filePath = Path.Combine(logDirectory, filename);
+            var stream = await _logService.GetLogFileStreamAsync(filename);
 
-            if (!System.IO.File.Exists(filePath))
+            if (stream == null)
             {
+                _logger.LogWarning("Log file {Filename} not found.", filename);
                 return NotFound(new { message = "Log file not found." });
             }
 
-            try
-            {
-                // Open file in Read mode with FileShare.ReadWrite to allow simultaneous access
-                var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-                _logger.LogInformation("Log file {Filename} was downloaded.", filename);
-
-                return File(stream, "text/plain", filename);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while downloading log file {Filename}", filename);
-                return StatusCode(500, new { message = "Error downloading log file." });
-            }
+            _logger.LogInformation("Log file {Filename} was downloaded.", filename);
+            return File(stream, "text/plain", filename);
         }
     }
 }

@@ -1,16 +1,9 @@
-using BrainThrust.src.Data;
-using BrainThrust.src.Models.Dtos;
-using BrainThrust.src.Models.Entities;
-using BrainThrust.src.Services;
+using BrainThrust.src.Dtos.EnrollmentDtos;
+using BrainThrust.src.Mappers;
+using BrainThrust.src.Services.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace BrainThrust.src.Controllers
 {
@@ -35,7 +28,7 @@ namespace BrainThrust.src.Controllers
         /// </summary>
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<ActionResult<List<GetEnrollmentDto>>> GetEnrollments([FromQuery] bool includeUserName = true)
+        public async Task<ActionResult<List<GetEnrollmentDto>>> GetEnrollments()
         {
             _logger.LogInformation("Admin fetching all active enrollments.");
 
@@ -43,14 +36,9 @@ namespace BrainThrust.src.Controllers
                 .Where(e => !e.IsDeleted)
                 .Include(e => e.User)
                 .Include(e => e.Subject)
-                .Select(e => new GetEnrollmentDto
-                {
-                    UserId = e.UserId,
-                    SubjectId = e.SubjectId,
-                    SubjectTitle = e.Subject.Title,
-                    UserFirstName = includeUserName ? $"{e.User.FirstName} {e.User.LastName}".Trim() : null
-                })
+                .Select(e => EnrollmentMapper.ToGetEnrollmentDto(e))
                 .ToListAsync();
+                
 
             return Ok(enrollments);
         }
@@ -74,12 +62,7 @@ namespace BrainThrust.src.Controllers
             var enrollments = await _context.Enrollments
                 .Where(e => e.UserId == user.Id && !e.IsDeleted)
                 .Include(e => e.Subject)
-                .Select(e => new GetEnrollmentDto
-                {
-                    UserId = e.UserId,
-                    SubjectId = e.SubjectId,
-                    SubjectTitle = e.Subject.Title
-                })
+                .Select(e => EnrollmentMapper.ToGetEnrollmentDto(e))
                 .ToListAsync();
 
             if (!enrollments.Any())
@@ -120,7 +103,7 @@ namespace BrainThrust.src.Controllers
         /// </summary>
         [Authorize]
         [HttpPost("enroll")]
-        public async Task<IActionResult> EnrollUser([FromBody] CreateEnrollmentDto request)
+        public async Task<IActionResult> EnrollUser([FromBody] CreateEnrollmentDto createEnrollmentDto)
         {
             var user = await _userService.GetAuthenticatedUserAsync(User);
             if (user == null)
@@ -129,18 +112,18 @@ namespace BrainThrust.src.Controllers
                 return Unauthorized(new { message = "User not authenticated." });
             }
 
-            _logger.LogInformation("User {UserId} attempting to enroll in Subject {SubjectId}", user.Id, request.SubjectId);
+            _logger.LogInformation("User {UserId} attempting to enroll in Subject {SubjectId}", user.Id, createEnrollmentDto.SubjectId);
 
-            var subject = await _context.Subjects.FindAsync(request.SubjectId);
+            var subject = await _context.Subjects.FindAsync(createEnrollmentDto.SubjectId);
             if (subject == null)
             {
-                _logger.LogWarning("Subject {SubjectId} not found.", request.SubjectId);
+                _logger.LogWarning("Subject {SubjectId} not found.", createEnrollmentDto.SubjectId);
                 return NotFound(new { message = "Subject not found." });
             }
 
             var existingEnrollment = await _context.Enrollments
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(e => e.UserId == user.Id && e.SubjectId == request.SubjectId);
+                .FirstOrDefaultAsync(e => e.UserId == user.Id && e.SubjectId == createEnrollmentDto.SubjectId);
 
             if (existingEnrollment != null)
             {
@@ -154,11 +137,11 @@ namespace BrainThrust.src.Controllers
                 return BadRequest(new { message = "User is already enrolled in this subject." });
             }
 
-            var enrollment = new Enrollment { UserId = user.Id, SubjectId = request.SubjectId };
+            var enrollment = EnrollmentMapper.ToEnrollment(createEnrollmentDto, user.Id);
             _context.Enrollments.Add(enrollment);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("User {UserId} successfully enrolled in Subject {SubjectId}", user.Id, request.SubjectId);
+            _logger.LogInformation("User {UserId} successfully enrolled in Subject {SubjectId}", user.Id, createEnrollmentDto.SubjectId);
 
             return Ok(new { message = "User successfully enrolled in the subject." });
         }

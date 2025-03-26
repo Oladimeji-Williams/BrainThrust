@@ -16,7 +16,8 @@ namespace BrainThrust.src.Models.Entities
 
         public virtual ICollection<Option> Options { get; set; } = new List<Option>();
 
-        public int? CorrectOptionId { get; set; }  // Store the correct option ID directly
+        public int CorrectOptionId { get; set; }  // Store the correct option ID directly
+        public int Score { get; set; }
 
         /// <summary>
         /// Retrieves the correct option based on the CorrectOptionId.

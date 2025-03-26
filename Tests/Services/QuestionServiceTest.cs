@@ -1,8 +1,7 @@
 using Xunit;
-using BrainThrust.src.Services;
 using BrainThrust.src.Models.Entities;
 using Moq;
-using BrainThrust.src.Data;
+using BrainThrust.src.Services.Classes;
 
 namespace BrainThrust.Tests.Services
 {

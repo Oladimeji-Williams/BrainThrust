@@ -1,12 +1,13 @@
-using BrainThrust.src.Models.Dtos;
 using BrainThrust.src.Utilities;
-using BrainThrust.src.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
-using BrainThrust.src.Services;
+using BrainThrust.src.Mappers;
+using BrainThrust.src.Dtos.UserDtos;
+using BrainThrust.src.Services.Interfaces;
+using BrainThrust.src.Services.Classes;
 
 namespace BrainThrust.src.Controllers
 {
@@ -29,24 +30,14 @@ namespace BrainThrust.src.Controllers
 
         // GET: api/users
         [Authorize(Roles ="Admin")]
-        [HttpGet("all-users")]
+        [HttpGet()]
         public async Task<IActionResult> GetUsers()
         {
             _logger.LogInformation("Fetching all users from the database.");
 
             // Fetch all users from the database, excluding passwords
             var users = await _context.Users
-                .Select(user => new
-                {
-                    user.Id,
-                    user.FirstName,
-                    user.LastName,
-                    user.Email,
-                    user.PhoneNumber,
-                    user.Address,
-                    user.Created,
-                    user.Modified
-                })
+                .Select(s => s.ToUserDto())
                 .ToListAsync();
 
             if (users == null || users.Count == 0)
@@ -60,11 +51,11 @@ namespace BrainThrust.src.Controllers
 
         // GET: api/users?email={email}
         [Authorize]
-        [HttpGet("profile")]
-        public async Task<IActionResult> GetUser([FromQuery] string email = null)
+        [HttpGet("me")]
+        public async Task<IActionResult> GetUser()
         {
-            // Extract user email from token if not provided
-            var userEmail = email ?? User.FindFirst(ClaimTypes.Email)?.Value;
+            // Extract user email from token
+            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
             if (string.IsNullOrEmpty(userEmail))
             {
@@ -73,7 +64,11 @@ namespace BrainThrust.src.Controllers
             }
 
             // Find the user in the database by email
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            var user = await _context.Users
+                .Where(s => s.Email == userEmail) // Filter before projecting
+                .Select(s => s.ToUserDto()) // Convert to DTO after filtering
+                .FirstOrDefaultAsync();
+
             if (user == null)
             {
                 _logger.LogWarning("Get user failed: User with email {Email} not found.", userEmail);
@@ -81,50 +76,33 @@ namespace BrainThrust.src.Controllers
             }
 
             // Return user details excluding the password
-            return Ok(new
-            {
-                user.Id,
-                user.FirstName,
-                user.LastName,
-                user.Email,
-                user.PhoneNumber,
-                user.Address,
-                user.Created,
-                user.Modified
-            });
+            return Ok(user);
         }
 
         // POST: api/users (Register new user)
         [HttpPost]
-        public async Task<IActionResult> RegisterUser(CreateUserDto request)
+        public async Task<IActionResult> RegisterUser(CreateUserDto createUserDto)
         {
-            var email = request.Email.ToLower();
+            var email = createUserDto.Email.ToLower();
             _logger.LogInformation("Sign-up attempt for email: {Email}", email);
 
-            if (await _context.Users.AnyAsync(u => u.Email.ToLower() == email))
+            if (await _context.Users.AnyAsync(u => u.Email.ToLower() == email.ToLower()))
             {
                 _logger.LogWarning("Registration failed: Email {Email} already exists.", email);
                 return Conflict("User already exists.");
             }
 
-            if (!PasswordValidator.IsValid(request.Password))
+            if (!PasswordValidator.IsValid(createUserDto.Password))
             {
                 _logger.LogWarning("Registration failed: Invalid password format for email {Email}.", email);
                 return BadRequest("Password does not meet complexity requirements.");
             }
 
-            PasswordHelper.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            PasswordHelper.CreatePasswordHash(createUserDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            bool adminExists = await _context.Users.AnyAsync(u => u.Role == "Admin");
-            var user = new User
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = email,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                Role = adminExists ? "User" : "Admin"
-            };
+            bool isAdmin = await _context.Users.AnyAsync(u => u.Role == "Admin");
+
+            var user = createUserDto.ToUser(passwordHash, passwordSalt, isAdmin);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -135,19 +113,19 @@ namespace BrainThrust.src.Controllers
 
         // POST: api/users/login
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginDto request)
+        public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
-            var email = request.Email.ToLower();
+            var email = userLoginDto.Email.ToLower();
             _logger.LogInformation("Login attempt for email: {Email}", email);
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
             if (user == null)
             {
                 _logger.LogWarning("Login failed: User {Email} not found.", email);
                 return NotFound("User not found.");
             }
 
-            if (!PasswordHelper.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            if (!PasswordHelper.VerifyPasswordHash(userLoginDto.Password, user.PasswordHash, user.PasswordSalt))
             {
                 _logger.LogWarning("Login failed: Incorrect password for user {Email}.", email);
                 return Unauthorized("Incorrect password.");
@@ -156,13 +134,15 @@ namespace BrainThrust.src.Controllers
             var token = JwtTokenService.GenerateJwtToken(user);
             _logger.LogInformation("User {Email} successfully logged in.", email);
 
-            return Ok(new { message = "Login successful!", token });
+            var userDto = user.ToUserDto();
+
+            return Ok(new { message = "Login successful!", token = token, user = userDto });
         }
 
         // PUT: api/users/update-profile
         [Authorize]
         [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateUser(UpdateUserDto request)
+        public async Task<IActionResult> UpdateUser(UpdateUserDto updateUserDto)
         {
             // Extract the user ID from the JWT token claims
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -183,11 +163,8 @@ namespace BrainThrust.src.Controllers
                 return NotFound("User not found.");
             }
 
-            // Update only the provided fields
-            user.FirstName = request.FirstName ?? user.FirstName;
-            user.LastName = request.LastName ?? user.LastName;
-            user.PhoneNumber = request.PhoneNumber ?? user.PhoneNumber;
-            user.Address = request.Address ?? user.Address;
+            user.UpdateUserFromDto(updateUserDto);
+
 
             await _context.SaveChangesAsync();
             _logger.LogInformation("Successfully updated profile for user ID: {Id}", userId);
@@ -219,7 +196,7 @@ namespace BrainThrust.src.Controllers
         // PUT: api/users/change-password
         [Authorize]
         [HttpPut("change-password")]
-        public async Task<IActionResult> ChangePassword(ChangePasswordDto request)
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
         {
             // Retrieve the logged-in user's email from JWT claims
             var email = User.FindFirstValue(ClaimTypes.Email);
@@ -239,16 +216,16 @@ namespace BrainThrust.src.Controllers
             }
 
             // Verify the current password
-            if (!PasswordHelper.VerifyPasswordHash(request.CurrentPassword, user.PasswordHash, user.PasswordSalt))
+            if (!PasswordHelper.VerifyPasswordHash(changePasswordDto.CurrentPassword, user.PasswordHash, user.PasswordSalt))
             {
                 _logger.LogWarning("Password change failed: Incorrect current password for user {Email}.", email);
                 return BadRequest("Current password is incorrect.");
             }
 
             // Hash the new password
-            PasswordHelper.CreatePasswordHash(request.NewPassword, out byte[] newPasswordHash, out byte[] newPasswordSalt);
-            user.PasswordHash = newPasswordHash;
-            user.PasswordSalt = newPasswordSalt;
+            PasswordHelper.CreatePasswordHash(changePasswordDto.NewPassword, out byte[] newPasswordHash, out byte[] newPasswordSalt);
+
+            user.ChangePasswordFromDto(newPasswordHash, newPasswordSalt);
 
             await _context.SaveChangesAsync();
             _logger.LogInformation("Password successfully changed for user: {Email}", email);
@@ -277,12 +254,12 @@ namespace BrainThrust.src.Controllers
 
         // POST: api/users/reset-password
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordDto request)
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
-            _logger.LogInformation("Password reset attempt with token: {Token}", request.Token);
+            _logger.LogInformation("Password reset attempt with token: {Token}", resetPasswordDto.Token);
 
             // Find the user by the reset token
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == request.Token);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == resetPasswordDto.Token);
             if (user == null || user.TokenExpiry < DateTime.UtcNow)
             {
                 _logger.LogWarning("Password reset failed: Invalid or expired token.");
@@ -290,13 +267,10 @@ namespace BrainThrust.src.Controllers
             }
 
             // Hash the new password
-            PasswordHelper.CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            PasswordHelper.CreatePasswordHash(resetPasswordDto.NewPassword, out byte[] newPasswordHash, out byte[] newPasswordSalt);
 
-            // Clear the reset token and expiration
-            user.PasswordResetToken = null;
-            user.TokenExpiry = null;
+            user.ResetPasswordFromDto(newPasswordHash, newPasswordSalt);
+
 
             await _context.SaveChangesAsync();
             _logger.LogInformation("Password reset successful for user ID: {Id}", user.Id);

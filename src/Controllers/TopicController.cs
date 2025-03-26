@@ -1,5 +1,5 @@
-using BrainThrust.src.Models.Dtos;
-using BrainThrust.src.Models.Entities;
+using BrainThrust.src.Dtos.TopicDtos;
+using BrainThrust.src.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,27 +18,58 @@ namespace BrainThrust.src.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateTopic([FromBody] TopicDto topicDto)
+
+        [HttpGet]
+        public async Task<IActionResult> GetTopics()
         {
-            if (topicDto == null)
+
+            var topicsDto = await _context.Topics
+                .Where(t => !t.IsDeleted)  // Exclude deleted topics
+                .Select(t => t.ToTopicDto())
+                .ToListAsync();
+
+            _logger.LogInformation("GetAllTopics: Retrieved {Count} topics).", topicsDto.Count);
+            return Ok(topicsDto);
+        }
+
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<GetTopicDto>> GetTopic(int Id)
+        {
+            var topicEntity = await _context.Topics
+                .Include(t => t.Lessons)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == Id); // ✅ Apply filter first in SQL
+
+            if (topicEntity == null)
+            {
+                _logger.LogWarning("GetTopic: Topic with Id {Id} not found.", Id);
+                return NotFound("Topic not found.");
+            }
+
+            var topicDto = topicEntity.ToTopicDto(); // ✅ Convert to DTO after fetching
+
+            _logger.LogInformation("GetTopic: Retrieved topic '{Title}' with Id {Id}.", topicDto.Title, topicDto.Id);
+            return Ok(topicDto);
+        }
+
+
+        [Authorize(Roles ="Admin")]
+        [HttpPost("{subjectId}")]
+        public async Task<IActionResult> CreateTopic(int subjectId, [FromBody] CreateTopicDto createTopicDto)
+        {
+            if (createTopicDto == null)
             {
                 _logger.LogWarning("CreateTopic: Received null topic data.");
                 return BadRequest("Topic data is required.");
             }
-            var subjectExists = await _context.Subjects.AnyAsync(s => s.Id == topicDto.SubjectId);
-            if (!subjectExists)
+            var isSubject = await _context.Subjects.AnyAsync(s => s.Id == subjectId);
+            if (!isSubject)
             {
-                _logger.LogWarning("CreateTopic: Subject with Id {SubjectId} does not exist.", topicDto.SubjectId);
-                return BadRequest($"Subject with Id {topicDto.SubjectId} does not exist.");
+                _logger.LogWarning("CreateTopic: Subject with Id {SubjectId} does not exist.", subjectId);
+                return BadRequest($"Subject with Id {subjectId} does not exist.");
             }
 
-            var topic = new Topic
-            {
-                Title = topicDto.Title,
-                Description = topicDto.Description,
-                SubjectId = topicDto.SubjectId
-            };
+            var topic = createTopicDto.ToTopic(subjectId);
 
             try
             {
@@ -46,14 +77,7 @@ namespace BrainThrust.src.Controllers
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("CreateTopic: Topic '{Title}' created with Id {Id}.", topic.Title, topic.Id);
 
-                var createdTopicDto = new GetTopicDto
-                {
-                    Id = topic.Id,
-                    Title = topic.Title,
-                    Description = topic.Description,
-                    SubjectId = topic.SubjectId,
-                    LessonIds = new List<int>()
-                };
+                var createdTopicDto = topic.ToTopicDto();
 
                 return CreatedAtAction(nameof(GetTopic), new { Id = topic.Id }, createdTopicDto);
             }
@@ -64,72 +88,19 @@ namespace BrainThrust.src.Controllers
             }
         }
 
-        [HttpGet("{Id}")]
-        public async Task<ActionResult<GetTopicDto>> GetTopic(int Id)
-        {
-            var topic = await _context.Topics
-                .Include(m => m.Lessons)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == Id);
-
-            if (topic == null)
-            {
-                _logger.LogWarning("GetTopic: Topic with Id {Id} not found.", Id);
-                return NotFound("Topic not found.");
-            }
-
-            var getTopicDto = new GetTopicDto
-            {
-                Id = topic.Id,
-                Title = topic.Title,
-                Description = topic.Description,
-                SubjectId = topic.SubjectId,
-                LessonIds = topic.Lessons.Select(l => l.Id).ToList()
-            };
-
-            _logger.LogInformation("GetTopic: Retrieved topic '{Title}' with Id {Id}.", topic.Title, topic.Id);
-            return Ok(getTopicDto);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<List<GetTopicDto>>> GetAllTopics([FromQuery] bool includeDeleted = false)
-        {
-            IQueryable<Topic> query = _context.Topics;
-
-            if (!includeDeleted)
-                query = query.Where(m => !m.IsDeleted);
-
-            var topics = await query
-                .Include(m => m.Lessons)
-                .AsNoTracking()
-                .ToListAsync();
-
-            var topicDtos = topics.Select(topic => new GetTopicDto
-            {
-                Id = topic.Id,
-                Title = topic.Title,
-                Description = topic.Description,
-                SubjectId = topic.SubjectId,
-                LessonIds = topic.Lessons.Select(l => l.Id).ToList()
-            }).ToList();
-
-            _logger.LogInformation("GetAllTopics: Retrieved {Count} topics (includeDeleted: {IncludeDeleted}).", topicDtos.Count, includeDeleted);
-            return Ok(topicDtos);
-        }
-
         [Authorize(Roles = "Admin")]
-        [HttpPatch("{Id}")]
-        public async Task<IActionResult> UpdateTopic(int Id, [FromBody] UpdateTopicDto topicDto)
+        [HttpPatch("{topicId}")]
+        public async Task<IActionResult> UpdateTopic(int topicId, [FromBody] UpdateTopicDto topicDto)
         {
-            _logger.LogInformation("Attempting to update topic with Id {TopicId}", Id);
+            _logger.LogInformation("Attempting to update topic with Id {TopicId}", topicId);
 
             try
             {
-                var topic = await _context.Topics.FindAsync(Id);
+                var topic = await _context.Topics.FindAsync(topicId);
 
                 if (topic == null)
                 {
-                    _logger.LogWarning("Topic with Id {TopicId} not found", Id);
+                    _logger.LogWarning("Topic with Id {TopicId} not found", topicId);
                     return NotFound(new { message = "Topic not found." });
                 }
 
@@ -138,24 +109,20 @@ namespace BrainThrust.src.Controllers
                 {
                     topic.IsDeleted = false;
                     topic.DateDeleted = null;
-                    _logger.LogInformation("Topic {TopicId} was deleted, restoring it now.", Id);
+                    _logger.LogInformation("Topic {TopicId} was deleted, restoring it now.", topicId);
                 }
 
-                // Apply updates only if provIded
-                if (!string.IsNullOrEmpty(topicDto.Title))
-                    topic.Title = topicDto.Title;
 
-                if (!string.IsNullOrEmpty(topicDto.Description))
-                    topic.Description = topicDto.Description;
+                topic.UpdateTopicFromDto(topicDto);
 
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Topic {TopicId} updated successfully", Id);
+                _logger.LogInformation("Topic {TopicId} updated successfully", topicId);
                 return NoContent(); // ✅ 204 No Content for successful updates
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating topic with Id {TopicId}", Id);
+                _logger.LogError(ex, "Error updating topic with Id {TopicId}", topicId);
                 return StatusCode(500, new { message = "An error occurred while updating the topic." });
             }
         }

@@ -1,13 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using BrainThrust.src.Data;
-using BrainThrust.src.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Serilog;
 using System.Text.Json.Serialization;
 using BrainThrust.src.Models;
+using BrainThrust.src.Services.Interfaces;
+using BrainThrust.src.Services.Classes;
+using BrainThrust.src.Repositories.Classes;
+using BrainThrust.src.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load(); // Load environment variables
@@ -23,10 +25,8 @@ builder.Host.UseSerilog();
 try
 {
     // ✅ Register dependencies
-    builder.Services.AddSingleton<EmailSettingsProvider>(); // Register EmailSettingsProvider
-
+    builder.Services.AddSingleton<EmailSettingsProvider>();
     builder.Services.AddScoped<IEmailService, EmailService>();
-
     builder.Services.AddControllers()
         .AddJsonOptions(options =>
         {
@@ -35,14 +35,28 @@ try
 
     var serviceProvider = builder.Services.BuildServiceProvider();
     var emailSettingsProvider = serviceProvider.GetRequiredService<EmailSettingsProvider>();
-
     var emailSettings = emailSettingsProvider.LoadEmailSettings();  // ✅ Now using the provider
 
     var jwtSecret = ValidateEnvironmentVariable("JWT_SECRET", minLength: 32);
     var connectionString = ValidateEnvironmentVariable("SSMS_CONNECTION");
     builder.Services.AddHttpContextAccessor();
+    builder.Services.AddScoped<IQuestionService, QuestionService>();
     builder.Services.AddScoped<UserService>();
-    builder.Services.AddScoped<ILearningProgressService, LearningProgressService>();
+    builder.Services.AddScoped<IUserService, UserService>();
+
+    builder.Services.AddScoped<ITopicRepository, TopicRepository>();
+
+    // ✅ Register repositories and services
+    builder.Services.AddScoped<IQuizRepository, QuizRepository>(); 
+    builder.Services.AddScoped<IQuizService, QuizService>();
+    builder.Services.AddScoped<ILearningProgressService, LearningProgressService>(); // If needed
+
+    builder.Services.AddScoped<ILearningProgressRepository, LearningProgressRepository>();
+    // Add Logging Service
+    builder.Services.AddScoped<ILogService, LogService>();
+    // Register services and repositories
+    builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+    builder.Services.AddScoped<IDashboardService, DashboardService>();
     
     
 

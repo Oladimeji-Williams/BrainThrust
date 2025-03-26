@@ -1,8 +1,5 @@
 using System.Security.Cryptography;
 using System.Text;
-
-
-
 namespace BrainThrust.src.Utilities
 {
     public class PasswordHelper

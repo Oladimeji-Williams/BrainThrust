@@ -1,10 +1,8 @@
-using BrainThrust.src.Models.Dtos;
-using BrainThrust.src.Models.Entities;
-using BrainThrust.src.Services;
+using BrainThrust.src.Dtos.QuizDtos;
+using BrainThrust.src.Dtos.SubmissionDtos;
+using BrainThrust.src.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace BrainThrust.src.Controllers
 {
@@ -12,333 +10,202 @@ namespace BrainThrust.src.Controllers
     [Route("api/quizzes")]
     public class QuizController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ILearningProgressService _learningProgressService;
-        private readonly UserService _userService;
+        private readonly IQuizService _quizService;
+        private readonly IUserService _userService;
         private readonly ILogger<QuizController> _logger;
 
-        public QuizController(ApplicationDbContext context, ILearningProgressService learningProgressService, UserService userService, ILogger<QuizController> logger)
+        public QuizController(IQuizService quizService, IUserService userService, ILogger<QuizController> logger)
         {
-            _context = context;
-            _learningProgressService = learningProgressService;
-            _userService = userService;
-            _logger = logger;
+            _quizService = quizService ?? throw new ArgumentNullException(nameof(quizService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
         /// Creates a new quiz.
         /// </summary>
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto dto)
+        public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizDto createQuizDto)
         {
-            _logger.LogInformation("Received request to create a new quiz.");
-
-            if (dto == null || string.IsNullOrWhiteSpace(dto.Title))
+            if (createQuizDto == null)
             {
-                _logger.LogWarning("Quiz creation failed. Title is missing.");
-                return BadRequest("Quiz title is required.");
+                _logger.LogWarning("CreateQuiz: Received null CreateQuizDto.");
+                return BadRequest("Invalid quiz data.");
             }
 
-            bool topicExists = await _context.Topics.AnyAsync(m => m.Id == dto.TopicId);
-            if (!topicExists)
+            if (!await _quizService.TopicExists(createQuizDto.TopicId))
             {
-                _logger.LogWarning("Quiz creation failed. Topic {TopicId} does not exist.", dto.TopicId);
-                return BadRequest("InvalId TopicId. Topic does not exist.");
+                _logger.LogWarning("CreateQuiz: Invalid TopicId {TopicId}.", createQuizDto.TopicId);
+                return BadRequest("The provided TopicId does not exist.");
             }
 
-            var existingQuiz = await _context.Quizzes.FirstOrDefaultAsync(q => q.TopicId == dto.TopicId);
-            if (existingQuiz != null)
+            try
             {
-                return BadRequest("A quiz already exists for this topic.");
+                var quiz = await _quizService.CreateQuiz(createQuizDto).ConfigureAwait(false);
+                _logger.LogInformation("CreateQuiz: Quiz created successfully for TopicId {TopicId}.", quiz.TopicId);
+                return CreatedAtAction(nameof(GetQuizByTopicId), new { topicId = quiz.TopicId }, quiz);
             }
-
-            var quiz = new Quiz
+            catch (Exception ex)
             {
-                Title = dto.Title,
-                TopicId = dto.TopicId
-            };
-
-            _context.Quizzes.Add(quiz);
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation("Quiz {Id} created successfully.", quiz.Id);
-
-            return CreatedAtAction(nameof(GetQuizByTopicId), new { TopicId = quiz.TopicId }, new QuizDto
-            {
-                Id = quiz.Id,
-                Title = quiz.Title,
-                TopicId = quiz.TopicId,
-                Questions = new List<QuestionDto>()
-            });
+                _logger.LogError(ex, "CreateQuiz: Error creating quiz for TopicId {TopicId}.", createQuizDto.TopicId);
+                return StatusCode(500, "An error occurred while creating the quiz.");
+            }
         }
 
         /// <summary>
-        /// Retrieves a specific quiz by TopicId.
+        /// Gets quiz details by topic ID.
         /// </summary>
         [Authorize(Roles = "Admin")]
-        [HttpGet("{TopicId}/details")]
-        public async Task<ActionResult<QuizDto>> GetQuizByTopicId(int TopicId)
+        [HttpGet("{topicId}/details")]
+        public async Task<IActionResult> GetQuizByTopicId(int topicId)
         {
-            _logger.LogInformation("Received request to fetch quiz for Topic {TopicId}.", TopicId);
-
-            var quiz = await _context.Quizzes
-                .Where(q => q.TopicId == TopicId && !q.IsDeleted)
-                .Include(q => q.Questions)
-                .Select(q => new QuizDto
+            try
+            {
+                var quiz = await _quizService.GetQuizByTopicId(topicId).ConfigureAwait(false);
+                if (quiz == null)
                 {
-                    Id = q.Id,
-                    Title = q.Title,
-                    TopicId = q.TopicId,
-                    Questions = q.Questions
-                        .Where(qs => !qs.IsDeleted)
-                        .Select(qs => new QuestionDto { Id = qs.Id, QuestionText = qs.QuestionText })
-                        .ToList()
-                })
-                .FirstOrDefaultAsync();
-
-            if (quiz == null)
-            {
-                _logger.LogWarning("Quiz for Topic {TopicId} not found or has been deleted.", TopicId);
-                return NotFound("Quiz not found or deleted.");
-            }
-
-            _logger.LogInformation("Quiz for Topic {TopicId} retrieved successfully.", TopicId);
-            return Ok(quiz);
-        }
-
-        /// <summary>
-        /// Updates an existing quiz by TopicId.
-        /// </summary>
-        [Authorize(Roles = "Admin")]
-        [HttpPut("{TopicId}")]
-        public async Task<IActionResult> UpdateQuizByTopicId(int TopicId, [FromBody] UpdateQuizDto dto)
-        {
-            _logger.LogInformation("Received request to update quiz for Topic {TopicId}.", TopicId);
-
-            var quiz = await _context.Quizzes
-                .Include(q => q.Questions)
-                .FirstOrDefaultAsync(q => q.TopicId == TopicId);
-
-            if (quiz == null)
-            {
-                _logger.LogWarning("Quiz update failed. No quiz found for Topic {TopicId}.", TopicId);
-                return NotFound("Quiz not found.");
-            }
-
-            if (dto.IsDeleted.HasValue)
-            {
-                quiz.IsDeleted = dto.IsDeleted.Value;
-                quiz.DateDeleted = dto.IsDeleted.Value ? DateTime.UtcNow : null;
-
-                foreach (var question in quiz.Questions)
-                {
-                    question.IsDeleted = dto.IsDeleted.Value;
-                    question.DateDeleted = dto.IsDeleted.Value ? DateTime.UtcNow : null;
+                    _logger.LogWarning("GetQuizByTopicId: Quiz not found for TopicId {TopicId}.", topicId);
+                    return NotFound("Quiz not found.");
                 }
+
+                _logger.LogInformation("GetQuizByTopicId: Retrieved quiz for TopicId {TopicId}.", topicId);
+                return Ok(quiz);
             }
-
-            if (!string.IsNullOrWhiteSpace(dto.Title))
-                quiz.Title = dto.Title;
-
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetQuizByTopicId: Error retrieving quiz for TopicId {TopicId}.", topicId);
+                return StatusCode(500, "An error occurred while retrieving the quiz.");
+            }
         }
 
         /// <summary>
-        /// Deletes a quiz permanently by TopicId.
+        /// Updates a quiz by topic ID.
         /// </summary>
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{TopicId}")]
-        public async Task<IActionResult> DeleteQuizByTopicId(int TopicId)
+        [HttpPut("{topicId}")]
+        public async Task<IActionResult> UpdateQuizByTopicId(int topicId, [FromBody] UpdateQuizDto updateQuizDto)
         {
-            _logger.LogInformation("Received request to permanently delete quiz for Topic {TopicId}.", TopicId);
-
-            var quiz = await _context.Quizzes.FirstOrDefaultAsync(q => q.TopicId == TopicId);
-            if (quiz == null)
+            if (updateQuizDto == null)
             {
-                return NotFound("Quiz not found.");
+                _logger.LogWarning("UpdateQuizByTopicId: Received null UpdateQuizDto for TopicId {TopicId}.", topicId);
+                return BadRequest("Invalid update data.");
             }
 
-            _context.Quizzes.Remove(quiz);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var success = await _quizService.UpdateQuizByTopicId(topicId, updateQuizDto).ConfigureAwait(false);
+                if (!success)
+                {
+                    _logger.LogWarning("UpdateQuizByTopicId: Quiz not found for TopicId {TopicId}.", topicId);
+                    return NotFound("Quiz not found.");
+                }
 
-            return Ok($"Quiz for Topic {TopicId} deleted.");
+                _logger.LogInformation("UpdateQuizByTopicId: Quiz updated successfully for TopicId {TopicId}.", topicId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UpdateQuizByTopicId: Error updating quiz for TopicId {TopicId}.", topicId);
+                return StatusCode(500, "An error occurred while updating the quiz.");
+            }
         }
 
         /// <summary>
-        /// Retrieves a quiz with questions (excluding answers).
+        /// Deletes a quiz by topic ID.
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{topicId}")]
+        public async Task<IActionResult> DeleteQuizByTopicId(int topicId)
+        {
+            try
+            {
+                var success = await _quizService.DeleteQuizByTopicId(topicId).ConfigureAwait(false);
+                if (!success)
+                {
+                    _logger.LogWarning("DeleteQuizByTopicId: Quiz not found for TopicId {TopicId}.", topicId);
+                    return NotFound("Quiz not found.");
+                }
+
+                _logger.LogInformation("DeleteQuizByTopicId: Quiz deleted successfully for TopicId {TopicId}.", topicId);
+                return Ok(new { message = "Quiz deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "DeleteQuizByTopicId: Error deleting quiz for TopicId {TopicId}.", topicId);
+                return StatusCode(500, "An error occurred while deleting the quiz.");
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a quiz for the user to take.
         /// </summary>
         [Authorize]
         [HttpGet("topic/{topicId}/quiz")]
-        public async Task<ActionResult<QuizDto>> TakeQuizByTopic(int topicId)
+        public async Task<IActionResult> TakeQuizByTopic(int topicId)
         {
             var userId = _userService.GetLoggedInUserId(User);
-            if (userId == null)
+            if (!userId.HasValue)
             {
-                _logger.LogWarning("Unauthorized quiz access attempt.");
-                return Unauthorized("User not authenticated.");
+                _logger.LogWarning("TakeQuizByTopic: Unauthorized access attempt.");
+                return Unauthorized("User not found.");
             }
 
-            var quiz = await _learningProgressService.GetQuizByTopicId(topicId);
-            if (quiz == null)
+            try
             {
-                _logger.LogWarning("No quiz found for Topic {TopicId}.", topicId);
-                return NotFound("No quiz available for this topic.");
-            }
-
-            var topic = quiz.Topic;
-            if (topic == null)
-            {
-                return NotFound("Quiz topic not found.");
-            }
-
-            // ✅ Check if user is enrolled in the subject
-            bool isEnrolled = await _learningProgressService.IsUserEnrolledInSubject(userId.Value, topic.SubjectId);
-            if (!isEnrolled)
-            {
-                _logger.LogWarning("User {UserId} tried to access quiz for topic {TopicId} without enrollment.", userId, topicId);
-                return Unauthorized("You must be enrolled in this subject to take the quiz.");
-            }
-
-            // ✅ Check if all lessons are completed
-            var totalLessons = await _learningProgressService.GetLessonsByTopic(topic.Id);
-            var completedLessons = await _learningProgressService.GetUserCompletedLessons(userId.Value, topic.Id);
-
-            if (completedLessons.Count < totalLessons.Count)
-            {
-                _logger.LogWarning("User {UserId} tried to take quiz for topic {TopicId} without completing all lessons.", userId, topicId);
-                return Unauthorized("You must complete all lessons in this topic before taking the quiz.");
-            }
-
-            _logger.LogInformation("User {UserId} is taking quiz for topic {TopicId}.", userId, topicId);
-
-            return Ok(new QuizDto
-            {
-                Id = quiz.Id,
-                Title = quiz.Title,
-                TopicId = quiz.TopicId,
-                Questions = quiz.Questions.Select(q => new QuestionDto
+                var quiz = await _quizService.TakeQuizByTopic(topicId, userId.Value).ConfigureAwait(false);
+                if (quiz == null)
                 {
-                    Id = q.Id,
-                    QuestionText = q.QuestionText,
-                    Options = q.Options.Select(o => new OptionDto
-                    {
-                        Id = o.Id,
-                        Text = o.Text
-                    }).ToList()
-                }).ToList()
+                    _logger.LogWarning("TakeQuizByTopic: Quiz not found for TopicId {TopicId}, User {UserId}.", topicId, userId);
+                    return NotFound("Quiz not found.");
+                }
 
-            });
+                _logger.LogInformation("TakeQuizByTopic: Quiz retrieved successfully for TopicId {TopicId}, User {UserId}.", topicId, userId);
+                return Ok(quiz);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "TakeQuizByTopic: Error retrieving quiz for TopicId {TopicId}, User {UserId}.", topicId, userId);
+                return StatusCode(500, "An error occurred while retrieving the quiz.");
+            }
         }
 
         /// <summary>
-        /// Submits quiz answers and returns percentage-based score.
+        /// Submits a quiz attempt.
         /// </summary>
         [Authorize]
         [HttpPost("submit")]
-        public async Task<IActionResult> SubmitQuiz([FromBody] SubmitQuizDto submission)
+        public async Task<IActionResult> SubmitQuiz([FromBody] SubmitQuizDto submitQuizDto)
         {
-            if (submission?.Answers == null || !submission.Answers.Any())
+            if (submitQuizDto == null)
             {
-                return BadRequest("Invalid request. Quiz ID and answers are required.");
-            }
-
-            var quiz = await _context.Quizzes
-                .Include(q => q.Questions)
-                .ThenInclude(q => q.Options)
-                .FirstOrDefaultAsync(q => q.Id == submission.QuizId);
-
-            if (quiz == null)
-            {
-                return NotFound("Quiz not found.");
+                _logger.LogWarning("SubmitQuiz: Received null SubmitQuizDto.");
+                return BadRequest(new { message = "Invalid submission data. Please provide valid quiz answers." });
             }
 
             var userId = _userService.GetLoggedInUserId(User);
             if (!userId.HasValue)
             {
-                return Unauthorized("Invalid user ID.");
+                _logger.LogWarning("SubmitQuiz: Unauthorized access attempt.");
+                return Unauthorized(new { message = "User authentication failed. Please log in again." });
             }
 
-
-            int totalQuestions = quiz.Questions.Count;
-            int correctAnswers = 0;
-            var userAttempts = new List<UserQuizSubmission>();
-            var userQuizAttempt = new UserQuizAttempt
+            try
             {
-                UserId = userId.Value,
-                QuizId = submission.QuizId
-            };
-
-            _context.UserQuizAttempts.Add(userQuizAttempt);
-            await _context.SaveChangesAsync(); // Save to get the generated Id
-
-            foreach (var answer in submission.Answers)
-            {
-                var question = quiz.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
-                if (question == null)
-                {
-                    return BadRequest($"Question with ID {answer.QuestionId} is not part of this quiz.");
-                }
-
-                var selectedOption = question.Options.FirstOrDefault(o => o.Id == answer.SelectedOptionId);
-                if (selectedOption == null)
-                {
-                    return BadRequest($"Selected option with ID {answer.SelectedOptionId} is invalid for question {answer.QuestionId}.");
-                }
-
-                var correctOption = question.GetCorrectOption();
-                bool isCorrect = correctOption != null && correctOption.Id == answer.SelectedOptionId;
-
-                if (isCorrect) 
-                {
-                    correctAnswers++;  // Now correctly counting the number of correct answers
-                }
-
-                userAttempts.Add(new UserQuizSubmission
-                {
-                    UserId = userId.Value,
-                    QuizId = submission.QuizId,
-                    QuestionId = question.Id,
-                    SelectedOptionId = answer.SelectedOptionId,
-                    Score = isCorrect ? 100 : 0,
-                    Created = DateTime.UtcNow,
-                    UserQuizAttemptId = userQuizAttempt.Id
-                });
+                var result = await _quizService.SubmitQuiz(submitQuizDto, userId.Value).ConfigureAwait(false);
+                _logger.LogInformation("SubmitQuiz: Quiz submitted successfully by User {UserId}.", userId);
+                return Ok(result);
             }
-
-            await _context.UserQuizSubmissions.AddRangeAsync(userAttempts);
-            await _context.SaveChangesAsync();
-
-            // Calculate total score percentage
-            double totalScorePercentage = totalQuestions > 0 ? ((double)correctAnswers / totalQuestions) * 100 : 0;
-
-            // Update UserQuizAttempt with results
-            userQuizAttempt.CorrectAnswers = correctAnswers;
-            userQuizAttempt.IncorrectAnswers = totalQuestions - correctAnswers;
-            userQuizAttempt.TotalQuestions = totalQuestions;
-            userQuizAttempt.TotalScore = totalScorePercentage;
-            userQuizAttempt.IsPassed = totalScorePercentage >= 50; // Assuming 50% is the passing mark
-
-            // Save the updated attempt
-            _context.UserQuizAttempts.Update(userQuizAttempt);
-            await _context.SaveChangesAsync();
-
-            return Ok(new
+            catch (ArgumentException ex)
             {
-                Message = "Quiz submitted successfully",
-                TotalScore = totalScorePercentage, // Total score as a percentage
-                TotalQuestions = totalQuestions,
-                CorrectAnswers = correctAnswers,
-                IncorrectAnswers = totalQuestions - correctAnswers,
-                Answers = userAttempts.Select(a => new
-                {
-                    a.QuestionId,
-                    a.SelectedOptionId,
-                    a.Score
-                })
-            });
+                _logger.LogWarning(ex, "SubmitQuiz: Validation error for User {UserId}.", userId);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SubmitQuiz: Unexpected error submitting quiz for User {UserId}.", userId);
+                return StatusCode(500, new { message = "An error occurred while submitting the quiz. Please try again later." });
+            }
         }
-
     }
 }

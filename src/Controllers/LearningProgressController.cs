@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using BrainThrust.src.Services;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using System.Threading.Tasks;
+using BrainThrust.src.Services.Interfaces;
+using BrainThrust.src.Services.Classes;
 
 namespace BrainThrust.src.Controllers
 {
@@ -14,162 +11,119 @@ namespace BrainThrust.src.Controllers
     {
         private readonly ILearningProgressService _learningProgressService;
         private readonly ILogger<LearningProgressController> _logger;
-        private readonly UserService _userService; // Inject UserService
+        private readonly UserService _userService;
+
         public LearningProgressController(ILearningProgressService learningProgressService, 
                                           ILogger<LearningProgressController> logger,
-                                          UserService userService) // Inject UserService
+                                          UserService userService)
         {
             _learningProgressService = learningProgressService;
             _logger = logger;
             _userService = userService;
         }
-   
 
         /// <summary>
-        /// Marks a lesson as completed for the authenticated user.
+        /// Marks a lesson as completed.
         /// </summary>
         [Authorize]
         [HttpPost("lesson/{lessonId}/complete")]
         public async Task<IActionResult> MarkLessonCompleted([FromRoute] int lessonId)
         {
             var userId = _userService.GetLoggedInUserId(User);
-            if (userId == null) return Unauthorized(new { message = "User not authenticated." });
+            if (userId == null)
+            {
+                _logger.LogWarning("MarkLessonCompleted: Unauthorized access attempt.");
+                return Unauthorized(new { message = "User not authenticated." });
+            }
 
             try
             {
-                _logger.LogInformation("Fetching lesson {LessonId} for user {UserId}", lessonId, userId);
-
-                var lesson = await _learningProgressService.GetLessonByIdAsync(lessonId);
-                if (lesson == null)
+                bool isMarked = await _learningProgressService.MarkLessonCompleted(userId.Value, lessonId);
+                if (isMarked)
                 {
-                    _logger.LogWarning("Lesson {LessonId} not found", lessonId);
-                    return NotFound(new { message = "Lesson not found." });
+                    _logger.LogInformation("MarkLessonCompleted: User {UserId} marked Lesson {LessonId} as completed.", userId, lessonId);
+                    return Ok(new { message = "Lesson marked as completed!" });
                 }
-
-                if (lesson.Topic == null)
+                else
                 {
-                    _logger.LogError("Lesson {LessonId} has no associated topic", lessonId);
-                    return BadRequest(new { message = "Lesson topic not found." });
-                }
-
-                var isUserEnrolled = await _learningProgressService.IsUserEnrolledInSubject(userId.Value, lesson.Topic.SubjectId);
-                if (!isUserEnrolled)
-                {
-                    return StatusCode(403, new { message = "User is not enrolled in this subject." });
-                }
-
-                // ✅ Check if all previous lessons in the same topic are completed
-                var previousLessons = await _learningProgressService.GetPreviousLessons(lesson.Id, lesson.TopicId);
-                var completedLessons = await _learningProgressService.GetUserCompletedLessons(userId.Value, lesson.TopicId);
-
-                if (previousLessons.Any(pl => !completedLessons.Contains(pl.Id)))
-                {
-                    return BadRequest(new { message = "You must complete previous lessons in this topic before proceeding." });
-                }
-
-                // ✅ Check if all lessons in previous topics are completed
-                var previousTopics = await _learningProgressService.GetPreviousTopics(lesson.TopicId, lesson.Topic.SubjectId);
-                foreach (var topic in previousTopics)
-                {
-                    var topicLessons = await _learningProgressService.GetLessonsByTopic(topic.Id);
-                    if (topicLessons.Any(l => !completedLessons.Contains(l.Id)))
-                    {
-                        return BadRequest(new { message = "You must complete all lessons in previous topics before proceeding." });
-                    }
-                }
-
-                // ✅ Check if the topic has a quiz
-                var topicQuiz = await _learningProgressService.GetQuizByTopicId(lesson.TopicId);
-                if (topicQuiz != null)
-                {
-                    // Check if all lessons in this topic are completed
-                    var allLessonsInTopic = await _learningProgressService.GetLessonsByTopic(lesson.TopicId);
-                    bool allLessonsCompleted = allLessonsInTopic.All(l => completedLessons.Contains(l.Id));
-
-                    if (allLessonsCompleted)
-                    {
-                        // Check if the user has taken and passed the quiz
-                        var UserQuizSubmission = await _learningProgressService.GetUserQuizSubmission(userId.Value, topicQuiz.Id);
-                        if (UserQuizSubmission == null || UserQuizSubmission.Score < 60) // Pass mark = 60%
-                        {
-                            return BadRequest(new { message = "You must complete and pass the quiz for this topic before proceeding to the next topic." });
-                        }
-                    }
-                }
-
-                // ✅ Mark lesson as completed
-                bool isMarked = await _learningProgressService.MarkLessonCompleted(lessonId, userId.Value);
-                if (!isMarked)
-                {
+                    _logger.LogWarning("MarkLessonCompleted: Failed to mark Lesson {LessonId} for User {UserId}.", lessonId, userId);
                     return NotFound(new { message = "Failed to mark lesson as completed." });
                 }
-
-                return Ok(new { message = "Lesson marked as completed!" });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error marking lesson {LessonId} as completed for user {UserId}", lessonId, userId);
-                return StatusCode(500, new { message = "An error occurred while marking the lesson as completed.", error = ex.Message });
+                _logger.LogError(ex, "MarkLessonCompleted: Error occurred while marking Lesson {LessonId} for User {UserId}.", lessonId, userId);
+                return StatusCode(500, new { message = "An error occurred while marking the lesson as completed." });
             }
         }
 
         /// <summary>
-        /// Retrieves the user's progress for a given subject.
+        /// Gets the user's progress for a specific subject.
         /// </summary>
         [Authorize]
         [HttpGet("subject/{subjectId}")]
         public async Task<IActionResult> GetUserProgress([FromRoute] int subjectId)
         {
             var userId = _userService.GetLoggedInUserId(User);
-            if (userId == null) return Unauthorized(new { message = "User not authenticated." });
-
-            _logger.LogInformation("Fetching progress for user {UserId} in subject {SubjectId}", userId, subjectId);
+            if (userId == null)
+            {
+                _logger.LogWarning("GetUserProgress: Unauthorized access attempt.");
+                return Unauthorized(new { message = "User not authenticated." });
+            }
 
             try
             {
-                var progress = await _learningProgressService.GetUserProgress(subjectId, userId.Value);
-
-                if (progress == null || progress.Count == 0)
+                var progress = await _learningProgressService.GetUserProgress(userId.Value, subjectId);
+                if (progress.Count > 0)
                 {
-                    return NotFound(new { message = "No progress found for this user and subject." });
+                    _logger.LogInformation("GetUserProgress: Retrieved progress for User {UserId}, Subject {SubjectId}.", userId, subjectId);
+                    return Ok(progress);
                 }
-
-                return Ok(progress);
+                else
+                {
+                    _logger.LogWarning("GetUserProgress: No progress found for User {UserId}, Subject {SubjectId}.", userId, subjectId);
+                    return NotFound(new { message = "No progress found." });
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching progress for user {UserId} in subject {SubjectId}", userId, subjectId);
-                return StatusCode(500, new { message = "An error occurred while fetching progress." });
+                _logger.LogError(ex, "GetUserProgress: Error retrieving progress for User {UserId}, Subject {SubjectId}.", userId, subjectId);
+                return StatusCode(500, new { message = "An error occurred while retrieving progress." });
             }
         }
 
         /// <summary>
-        /// Retrieves the last lesson the user visited.
+        /// Gets the last lesson the user visited.
         /// </summary>
         [Authorize]
         [HttpGet("user/last-lesson")]
         public async Task<IActionResult> GetLastLesson()
         {
             var userId = _userService.GetLoggedInUserId(User);
-            if (userId == null) return Unauthorized(new { message = "User not authenticated." });
-
-            _logger.LogInformation("Fetching last visited lesson for user {UserId}", userId);
+            if (userId == null)
+            {
+                _logger.LogWarning("GetLastLesson: Unauthorized access attempt.");
+                return Unauthorized(new { message = "User not authenticated." });
+            }
 
             try
             {
                 var lastLesson = await _learningProgressService.GetLastVisitedLesson(userId.Value);
-
-                if (lastLesson == null)
+                if (lastLesson != null)
                 {
+                    _logger.LogInformation("GetLastLesson: Retrieved last visited lesson for User {UserId}.", userId);
+                    return Ok(new { lastLesson });
+                }
+                else
+                {
+                    _logger.LogWarning("GetLastLesson: No last lesson found for User {UserId}.", userId);
                     return NotFound(new { message = "No lesson progress found." });
                 }
-
-                return Ok(new { lastLesson });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching last visited lesson for user {UserId}", userId);
-                return StatusCode(500, new { message = "An error occurred while retrieving last lesson progress." });
+                _logger.LogError(ex, "GetLastLesson: Error retrieving last visited lesson for User {UserId}.", userId);
+                return StatusCode(500, new { message = "An error occurred while retrieving the last visited lesson." });
             }
         }
     }

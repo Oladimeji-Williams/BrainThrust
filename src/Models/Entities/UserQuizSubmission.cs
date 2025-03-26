@@ -10,7 +10,6 @@ namespace BrainThrust.src.Models.Entities
         public int QuizId { get; set; }
         public int QuestionId { get; set; }
         public int? SelectedOptionId { get; set; }
-        public decimal Score { get; set; }
 
         // ✅ Add a foreign key reference to UserQuizAttempt
         public int UserQuizAttemptId { get; set; }

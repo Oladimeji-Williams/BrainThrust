@@ -1,18 +1,11 @@
-using BrainThrust.src.Data;
-using BrainThrust.src.Models.Dtos;
-using BrainThrust.src.Models.Entities;
+using BrainThrust.src.Dtos.SubjectDtos;
+using BrainThrust.src.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BrainThrust.src.Controllers
 {
-
     [ApiController]
     [Route("api/subjects")]
     public class SubjectController : ControllerBase
@@ -26,159 +19,140 @@ namespace BrainThrust.src.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateCubject([FromBody] CreateSubjectDto dto)
+        // ✅ Get all subjects (GET)
+        [HttpGet]
+        public async Task<IActionResult> GetSubjects()
         {
-            _logger.LogInformation("CreateCubject: Received request to create a new cubject.");
+            _logger.LogInformation("Fetching all subjects.");
 
-            if (dto == null || string.IsNullOrWhiteSpace(dto.Title))
+            var subjects = await _context.Subjects
+                .Where(s => !s.IsDeleted)
+                .Include(s => s.Topics)
+                .ToListAsync();
+
+            var subjectsDto = subjects.Select(s => s.ToSubjectDto()).ToList();
+
+            _logger.LogInformation("Retrieved {Count} subjects.", subjectsDto.Count);
+            return Ok(subjectsDto);
+        }
+
+        // ✅ Get a single subject by Id (GET)
+        [HttpGet("{subjectId}")]
+        public async Task<ActionResult<GetSubjectDto>> GetSubject(int subjectId)
+        {
+            _logger.LogInformation("Fetching subject with Id {Id}.", subjectId);
+
+            var subject = await _context.Subjects
+                .Include(s => s.Topics)
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
             {
-                _logger.LogWarning("CreateCubject: InvalId cubject data.");
-                return BadRequest("Cubject title is required.");
+                _logger.LogWarning("Subject with Id {Id} not found.", subjectId);
+                return NotFound("Subject not found.");
             }
 
-            var subject = new Subject
+            return Ok(subject.ToSubjectDto());
+        }
+
+        // ✅ Create a new subject (POST)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateSubject([FromBody] CreateSubjectDto createSubjectDto)
+        {
+            _logger.LogInformation("Received request to create a new subject.");
+
+            if (createSubjectDto == null || string.IsNullOrWhiteSpace(createSubjectDto.Title))
             {
-                Title = dto.Title,
-                Description = dto.Description
-            };
+                _logger.LogWarning("Invalid subject data received.");
+                return BadRequest("Subject title is required.");
+            }
+
+            var subject = createSubjectDto.ToSubject();
 
             try
             {
                 _context.Subjects.Add(subject);
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("CreateCubject: Cubject '{Title}' created successfully with Id {Id}.", subject.Title, subject.Id);
+                _logger.LogInformation("Subject '{Title}' created successfully with Id {Id}.", subject.Title, subject.Id);
 
-                return CreatedAtAction(nameof(GetSubject), new { Id = subject.Id }, new SubjectDto
-                {
-                    Id = subject.Id,
-                    Title = subject.Title,
-                    Description = subject.Description,
-                    IsDeleted = subject.IsDeleted
-                });
+                return CreatedAtAction(nameof(GetSubject), new { subjectId = subject.Id }, subject.ToSubjectDto());
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "CreateCubject: Error while creating cubject '{Title}'.", subject.Title);
-                return StatusCode(500, "An error occurred while creating the cubject.");
+                _logger.LogError(ex, "Error while creating subject '{Title}'.", subject.Title);
+                return StatusCode(500, "An error occurred while creating the subject.");
             }
         }
 
-        
-        // ✅ Get a single cubject by Id (GET)
-        [HttpGet("{Id}")]
-        public async Task<ActionResult<SubjectDto>> GetSubject(int Id)
-        {
-            _logger.LogInformation("GetSubject: Fetching subject with Id {Id}.", Id);
-
-            var subject = await _context.Subjects
-                .Include(c => c.Topics)
-                .Where(c => c.Id == Id)
-                .Select(c => new SubjectDto
-                {
-                    Id = c.Id,
-                    Title = c.Title,
-                    Description = c.Description,
-                    IsDeleted = c.IsDeleted,
-                    Topics = c.Topics.Select(m => new TopicDto { Title = m.Title, Description = m.Description }).ToList()
-                })
-                .FirstOrDefaultAsync();
-
-            if (subject == null)
-            {
-                _logger.LogWarning("GetSubject: Subject with Id {Id} not found.", Id);
-                return NotFound("Subject not found.");
-            }
-
-            return Ok(subject);
-        }
-
-        // Get all subjects (GET)
-        [HttpGet]
-        public async Task<ActionResult<List<SubjectDto>>> GetAllSubjects([FromQuery] bool includeDeleted = false)
-        {
-            _logger.LogInformation("GetAllSubjects: Fetching all subjects. IncludeDeleted: {IncludeDeleted}", includeDeleted);
-            var subjects = _context.Subjects
-                .Where(c => !c.IsDeleted)  // Exclude deleted cubjects
-                .Include(c => c.Topics)   // Ensure topics are included
-                .Select(c => new SubjectDto
-                {
-                    Id = c.Id,
-                    Title = c.Title,
-                    Description = c.Description,
-                    IsDeleted = c.IsDeleted,
-                    Topics = c.Topics.Select(m => new TopicDto
-                    {
-                        Title = m.Title,
-                        SubjectId = m.SubjectId,  // Ensure SubjectId is mapped
-                        Description = m.Description
-                    }).ToList()
-                })
-                .ToList();
-                
-            _logger.LogInformation("GetAllSubjects: Retrieved {Count} subjects.", subjects.Count);
-            return Ok(subjects);
-        }
-
-        [HttpPatch("{Id}")]
+        // ✅ Update an existing subject (PATCH) - Now using Mapper
+        [HttpPatch("{subjectId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateSubject(int Id, [FromBody] UpdateSubjectDto dto)
+        public async Task<IActionResult> UpdateSubject(int subjectId, [FromBody] UpdateSubjectDto dto)
         {
-            _logger.LogInformation("UpdateCubject: Attempting to update cubject with Id {Id}.", Id);
+            _logger.LogInformation("Attempting to update subject with Id {Id}.", subjectId);
 
-            var subject = await _context.Subjects.IgnoreQueryFilters().FirstOrDefaultAsync(c => c.Id == Id);
+            var subject = await _context.Subjects.IgnoreQueryFilters().FirstOrDefaultAsync(s => s.Id == subjectId);
             if (subject == null)
             {
-                _logger.LogWarning("UpdateSubject: Subject with Id {Id} not found.", Id);
+                _logger.LogWarning("Subject with Id {Id} not found.", subjectId);
                 return NotFound("Subject not found.");
-            }
-
-            // Restore cubject if it's soft-deleted
-            if (subject.IsDeleted)
-            {
-                _logger.LogInformation("UpdateSubject: Restoring soft-deleted subject with Id {Id}.", Id);
-                subject.IsDeleted = false;
-            }
-
-            // Apply updates only if values are provIded
-            if (!string.IsNullOrWhiteSpace(dto.Title)) subject.Title = dto.Title;
-            if (!string.IsNullOrWhiteSpace(dto.Description)) subject.Description = dto.Description;
-            if (!string.IsNullOrWhiteSpace(dto.ThumbnailUrl)) subject.ThumbnailUrl = dto.ThumbnailUrl;
-
-            // Allow updating IsDeleted manually only if explicitly provIded
-            if (dto.IsDeleted.HasValue)
-            {
-                subject.IsDeleted = dto.IsDeleted.Value;
             }
 
             try
             {
+                // Restore soft-deleted subject if needed
+                if (subject.IsDeleted)
+                {
+                    _logger.LogInformation("Restoring soft-deleted subject with Id {Id}.", subjectId);
+                    subject.IsDeleted = false;
+                }
+
+                // ✅ Use Mapper to update properties
+                subject.UpdateFromDto(dto);
+
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("UpdateCubject: Cubject with Id {Id} updated successfully.", Id);
+                _logger.LogInformation("Subject with Id {Id} updated successfully.", subjectId);
                 return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "UpdateSubject: Error updating subject with Id {Id}.", Id);
-                return StatusCode(500, "An error occurred while updating the cubject.");
+                _logger.LogError(ex, "Error updating subject with Id {Id}.", subjectId);
+                return StatusCode(500, "An error occurred while updating the subject.");
             }
         }
 
-        // Soft delete a subject (DELETE)
-        [HttpDelete("{Id}")]
+        [HttpDelete("{subjectId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteSubject(int Id)
+        public async Task<IActionResult> DeleteSubject(int subjectId)
         {
-            var subject = await _context.Subjects.FindAsync(Id);
-            if (subject == null) return NotFound("Subject not found.");
+            _logger.LogInformation("Attempting to permanently delete subject with Id {Id}.", subjectId);
 
-            _context.Subjects.Remove(subject);
-            await _context.SaveChangesAsync();
-            
-            return NoContent(); // 204 No Content indicates successful deletion
+            var subject = await _context.Subjects
+                .Include(s => s.Topics) // Include related topics if necessary
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                _logger.LogWarning("Subject with Id {Id} not found.", subjectId);
+                return NotFound("Subject not found.");
+            }
+
+            try
+            {
+                // ✅ Hard delete instead of soft delete
+                _context.Subjects.Remove(subject);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Subject '{Title}' with Id {Id} permanently deleted.", subject.Title, subjectId);
+                return Ok($"Subject '{subject.Title}' has been deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting subject with Id {Id}.", subjectId);
+                return StatusCode(500, "An error occurred while deleting the subject.");
+            }
         }
 
     }
-
 }
