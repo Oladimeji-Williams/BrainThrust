@@ -9,7 +9,7 @@ namespace BrainThrust.src.Dtos.QuizDtos
 
         [Required]
         [StringLength(200, MinimumLength = 3)]
-        public string Title { get; set; } = string.Empty;
+        public string? Title { get; set; }
 
         [Required]
         public int TopicId { get; set; }

@@ -6,16 +6,16 @@ namespace BrainThrust.src.Models
     public class EmailSettings
     {
         [Required]
-        public required string SmtpServer { get; set; }
+        public string? SmtpServer { get; set; }
         [Required]
-        public required int Port { get; set; }
+        public int Port { get; set; }
         [Required]
-        public required string Username { get; set; }
+        public string? Username { get; set; }
         [Required]
-        public required string Password { get; set; }
+        public string? Password { get; set; }
         [Required]
-        public required string FromEmail { get; set; }
+        public string? FromEmail { get; set; }
         [Required]
-        public required bool EnableSsl { get; set; }
+        public bool EnableSsl { get; set; }
     }
 }

@@ -75,7 +75,6 @@ namespace BrainThrust.src.Repositories.Classes
                 throw new InvalidOperationException("This quiz has no questions available.");
             }
 
-            // Ensure at least one submission
             if (submitQuizDto.Submissions == null || !submitQuizDto.Submissions.Any())
             {
                 throw new ArgumentException("Your submission does not contain any answers. Please answer at least one question before submitting.");
@@ -137,8 +136,7 @@ namespace BrainThrust.src.Repositories.Classes
                 });
             }
 
-            // Calculate score based on total quiz questions, not only answered questions
-            attempt.TotalScore = (attempt.CorrectAnswers / (double)totalQuestions) * 100;
+            attempt.TotalScore = attempt.CorrectAnswers / totalQuestions * 100;
             attempt.IsPassed = attempt.TotalScore >= 60;
 
             await _context.SaveChangesAsync();

@@ -19,17 +19,14 @@ namespace BrainThrust.src.Models.Entities
         [Column(TypeName = "decimal(5,2)")]
         public double TotalScore { get; set; }
         [Required]
-        public bool IsPassed { get; set; } // Passed if TotalScore >= 60
+        public bool IsPassed { get; set; }
 
-        // ✅ Ensure User navigation
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public User? User { get; set; }
 
-        // ✅ Ensure Quiz navigation
         [ForeignKey("QuizId")]
-        public Quiz Quiz { get; set; }
+        public Quiz? Quiz { get; set; }
 
-        // ✅ Ensure proper navigation for submissions
         public virtual ICollection<UserQuizSubmission> Submissions { get; set; } = new List<UserQuizSubmission>();
     }
 }

@@ -43,9 +43,9 @@ namespace BrainThrust.src.Services.Classes
                 },
                 Engagement = new EngagementStatsDto
                 {
-                    TopScorers = topScorers?
+                    TopScorers = topScorers
                         .Select(t => (t.UserId, t.TotalScore))
-                        .ToList() ?? new List<(int, int)>()
+                        .ToList() ?? new List<(int, double)>()
 
                 },
                 QuizPerformance = new QuizPerformanceDto

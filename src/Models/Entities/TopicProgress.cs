@@ -6,19 +6,17 @@ namespace BrainThrust.src.Models.Entities
     public class TopicProgress : BaseEntity
     {
         [Required]
-        public required int TopicId { get; set; }
+        public int TopicId { get; set; }
         [Required]
-        public required int UserId { get; set; }  // Track progress per user
+        public int UserId { get; set; }
         public bool IsCompleted { get; set; } = false;
         public DateTime? DateCompleted { get; set; }
 
-        // Foreign key relationship
         [ForeignKey(nameof(TopicId))]
-        public Topic? Topic { get; set; } = null!;
+        public Topic? Topic { get; set; }
 
-        // ✅ Add User Navigation Property
         [ForeignKey(nameof(UserId))]
         [Required]
-        public User? User { get; set; } = null!;
+        public User? User { get; set; }
     }
 }

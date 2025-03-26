@@ -6,10 +6,10 @@ namespace BrainThrust.src.Models.Entities
     public class Quiz : BaseEntity
     {
         [Required]
-        public required int TopicId { get; set; }
+        public int TopicId { get; set; }
         
         [Required]
-        public required string Title { get; set; }
+        public string? Title { get; set; }
         
         [ForeignKey(nameof(TopicId))]
         public Topic? Topic { get; set; }

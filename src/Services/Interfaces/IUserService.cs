@@ -5,7 +5,7 @@ namespace BrainThrust.src.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<User> GetAuthenticatedUserAsync(ClaimsPrincipal user);
+        Task<User?> GetAuthenticatedUserAsync(ClaimsPrincipal user);
         int? GetLoggedInUserId(ClaimsPrincipal user);
     }
 }

@@ -6,7 +6,7 @@ namespace BrainThrust.src.Dtos.QuestionDtos
     public class QuestionDto
     {
         public int Id { get; set; }
-        public string QuestionText { get; set; } = string.Empty;
-        public List<OptionDto> Options { get; set; } = new();
+        public string? QuestionText { get; set; }
+        public List<GetOptionDto> Options { get; set; } = new List<GetOptionDto>();
     }
 }

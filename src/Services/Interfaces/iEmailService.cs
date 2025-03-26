@@ -1,8 +1,8 @@
 namespace BrainThrust.src.Services.Interfaces
 {
-    public interface IEmailService  // Change from IMailService to IEmailService
+    public interface IEmailService
     {
-        string FromEmail { get; }  // ✅ Read-only property
+        string FromEmail { get; }
 
 
         Task SendEmailAsync(string toEmail, string subject, string body);

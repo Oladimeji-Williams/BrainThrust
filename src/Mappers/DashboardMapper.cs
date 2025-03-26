@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using BrainThrust.src.Dtos.ReportDtos;
 
 namespace BrainThrust.src.Mappers

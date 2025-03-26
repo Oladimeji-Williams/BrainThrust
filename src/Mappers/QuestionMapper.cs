@@ -33,7 +33,6 @@ namespace BrainThrust.src.Mappers
                 QuizId = quizId
             };
 
-            // Convert options and assign correct option ID
             var options = createQuestionDto.Options
                 .Select(o => new Option { Text = o.Text })
                 .ToList();

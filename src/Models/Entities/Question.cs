@@ -7,16 +7,16 @@ namespace BrainThrust.src.Models.Entities
     public class Question : BaseEntity
     {
         [ForeignKey("Quiz")]
-        public required int QuizId { get; set; }
+        public int QuizId { get; set; }
 
         [Required]
-        public required string QuestionText { get; set; }
+        public string? QuestionText { get; set; }
 
         public virtual Quiz? Quiz { get; set; }
 
         public virtual ICollection<Option> Options { get; set; } = new List<Option>();
 
-        public int CorrectOptionId { get; set; }  // Store the correct option ID directly
+        public int CorrectOptionId { get; set; }
         public int Score { get; set; }
 
         /// <summary>

@@ -8,7 +8,7 @@ namespace BrainThrust.src.Dtos.ReportDtos
     public class EngagementStatsDto
     {
         public int ActiveLearners { get; set; }
-        public List<MostEnrolledSubjectDto> MostEnrolledSubjects { get; set; }
-        public List<(int UserId, int TotalScore)> TopScorers { get; set; }
+        public List<MostEnrolledSubjectDto>? MostEnrolledSubjects { get; set; }
+        public List<(int UserId, double TotalScore)>? TopScorers { get; set; }
     }
 }

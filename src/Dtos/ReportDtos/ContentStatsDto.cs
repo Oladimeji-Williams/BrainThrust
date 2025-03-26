@@ -11,7 +11,7 @@ namespace BrainThrust.src.Dtos.ReportDtos
         public int TotalTopics { get; set; }
         public int TotalLessons { get; set; }
         public int TotalQuizzes { get; set; }
-        public List<(int SubjectId, int Enrollments)> MostEnrolledSubjects { get; set; }
+        public List<(int SubjectId, int Enrollments)> MostEnrolledSubjects { get; set; } = new List<(int SubjectId, int Enrollments)>();
 
     }
 }

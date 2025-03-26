@@ -5,7 +5,7 @@ namespace BrainThrust.src.Mappers
 {
     public static class LearningProgressMapper
     {
-        public static LearningProgressDto ToDTO(LessonProgress lessonProgress)
+        public static LearningProgressDto? ToLearningProgressDto(LessonProgress lessonProgress)
         {
             if (lessonProgress == null) return null;
 
@@ -18,9 +18,9 @@ namespace BrainThrust.src.Mappers
             };
         }
 
-        public static List<LearningProgressDto> ToDTOList(List<LessonProgress> lessonProgresses)
+        public static List<LearningProgressDto> ToLearningProgressDtoList(List<LessonProgress> lessonProgresses)
         {
-            return lessonProgresses.Select(ToDTO).ToList();
+            return lessonProgresses.Select(ToLearningProgressDto).ToList();
         }
     }
 }

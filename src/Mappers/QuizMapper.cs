@@ -18,7 +18,7 @@ namespace BrainThrust.src.Mappers
                 {
                     Id = q.Id,
                     QuestionText = q.QuestionText,
-                    Options = q.Options.Select(o => new OptionDto
+                    Options = q.Options.Select(o => new GetOptionDto
                     {
                         Id = o.Id,
                         Text = o.Text
@@ -38,7 +38,7 @@ namespace BrainThrust.src.Mappers
                 {
                     Id = q.Id,
                     QuestionText = q.QuestionText,
-                    Options = q.Options.Select(o => new OptionDto
+                    Options = q.Options.Select(o => new GetOptionDto
                     {
                         Id = o.Id,
                         Text = o.Text

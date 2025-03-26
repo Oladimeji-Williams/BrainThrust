@@ -6,17 +6,17 @@ namespace BrainThrust.src.Models.Entities
     public class Enrollment : BaseEntity
     {
         [Required]
-        public required int UserId { get; set; }  // Foreign key to User
+        public int UserId { get; set; }
 
         [Required]
-        public required int SubjectId { get; set; } // Foreign key to Course
+        public int SubjectId { get; set; }
 
         [ForeignKey(nameof(UserId))]
         [Required]
-        public User User { get; set; } = null!;
+        public User? User { get; set; }
 
         [ForeignKey(nameof(SubjectId))]
         [Required]
-        public Subject Subject { get; set; } = null!;
+        public Subject? Subject { get; set; }
     }
 }

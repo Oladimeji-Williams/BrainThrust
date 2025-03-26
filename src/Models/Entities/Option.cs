@@ -10,7 +10,7 @@ namespace BrainThrust.src.Models.Entities
         public int QuestionId { get; set; }
 
         [Required]
-        public required string Text { get; set; }
+        public string? Text { get; set; }
 
         public Question? Question { get; set; }
     }

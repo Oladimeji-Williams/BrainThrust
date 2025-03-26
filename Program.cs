@@ -12,9 +12,8 @@ using BrainThrust.src.Repositories.Classes;
 using BrainThrust.src.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
-DotNetEnv.Env.Load(); // Load environment variables
+DotNetEnv.Env.Load();
 
-// ✅ Configure Serilog for Logging
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/app.log", rollingInterval: RollingInterval.Day)
@@ -24,7 +23,6 @@ builder.Host.UseSerilog();
 
 try
 {
-    // ✅ Register dependencies
     builder.Services.AddSingleton<EmailSettingsProvider>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddControllers()
@@ -35,37 +33,30 @@ try
 
     var serviceProvider = builder.Services.BuildServiceProvider();
     var emailSettingsProvider = serviceProvider.GetRequiredService<EmailSettingsProvider>();
-    var emailSettings = emailSettingsProvider.LoadEmailSettings();  // ✅ Now using the provider
+    var emailSettings = emailSettingsProvider.LoadEmailSettings();
 
     var jwtSecret = ValidateEnvironmentVariable("JWT_SECRET", minLength: 32);
     var connectionString = ValidateEnvironmentVariable("SSMS_CONNECTION");
+
     builder.Services.AddHttpContextAccessor();
+    
     builder.Services.AddScoped<IQuestionService, QuestionService>();
     builder.Services.AddScoped<UserService>();
     builder.Services.AddScoped<IUserService, UserService>();
-
     builder.Services.AddScoped<ITopicRepository, TopicRepository>();
-
-    // ✅ Register repositories and services
     builder.Services.AddScoped<IQuizRepository, QuizRepository>(); 
     builder.Services.AddScoped<IQuizService, QuizService>();
-    builder.Services.AddScoped<ILearningProgressService, LearningProgressService>(); // If needed
-
+    builder.Services.AddScoped<ILearningProgressService, LearningProgressService>();
     builder.Services.AddScoped<ILearningProgressRepository, LearningProgressRepository>();
-    // Add Logging Service
     builder.Services.AddScoped<ILogService, LogService>();
-    // Register services and repositories
     builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
     builder.Services.AddScoped<IDashboardService, DashboardService>();
     
-    
-
     builder.Services.AddMemoryCache(); 
-    // ✅ Configure EF Core with SQL Server
+    
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(connectionString));
 
-    // ✅ Configure EmailSettings using Dependency Injection
     builder.Services.Configure<EmailSettings>(options =>
     {
         options.SmtpServer = emailSettings.SmtpServer;
@@ -76,7 +67,6 @@ try
         options.EnableSsl = emailSettings.EnableSsl;
     });
 
-    // ✅ Configure JWT Authentication
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -97,12 +87,11 @@ try
 
     builder.Services.AddAuthorization();
 
-    // ✅ Configure Swagger with JWT Authentication
     ConfigureSwagger(builder.Services);
 
     var app = builder.Build();
 
-    // ✅ Middleware and request pipeline configuration
+
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
@@ -113,31 +102,29 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-    // ✅ Middleware to log failed JWT Authentication attempts
     app.Use(async (context, next) =>
     {
         if (context.User.Identity is { IsAuthenticated: false })
         {
-            Log.Warning("🚨 JWT Authentication Failed!");
+            Log.Warning("JWT Authentication Failed!");
         }
         await next();
     });
 
     app.MapControllers();
 
-    Log.Information("✅ Application started successfully.");
+    Log.Information("Application started successfully.");
     app.Run();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "🚨 Application startup failed.");
+    Log.Fatal(ex, "Application startup failed.");
 }
 finally
 {
     Log.CloseAndFlush();
 }
 
-// ✅ Helper Method for Environment Variable Validation
 string ValidateEnvironmentVariable(string key, int minLength = 1)
 {
     var value = Environment.GetEnvironmentVariable(key);
@@ -149,15 +136,12 @@ string ValidateEnvironmentVariable(string key, int minLength = 1)
     return value;
 }
 
-// ✅ Configure Swagger with JWT Authentication
 void ConfigureSwagger(IServiceCollection services)
 {
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "BrainThrust API", Version = "v1" });
-
-        // ✅ Add JWT Authentication to Swagger
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Name = "Authorization",
@@ -167,7 +151,6 @@ void ConfigureSwagger(IServiceCollection services)
             In = ParameterLocation.Header,
             Description = "Enter 'Bearer YOUR_ACCESS_TOKEN' below",
         });
-
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {

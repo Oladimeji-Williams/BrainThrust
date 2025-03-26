@@ -20,13 +20,13 @@ namespace BrainThrust.src.Services.Classes
                     Port = int.Parse(Environment.GetEnvironmentVariable("EMAIL_PORT") ?? "587"),
                     Username = ValidateEnvironmentVariable("EMAIL_USERNAME"),
                     Password = ValidateEnvironmentVariable("EMAIL_PASSWORD"),
-                    FromEmail = ValidateEnvironmentVariable("FROM_EMAIL"),  // 🛑 Ensure this is not null
+                    FromEmail = ValidateEnvironmentVariable("FROM_EMAIL"), 
                     EnableSsl = bool.TryParse(Environment.GetEnvironmentVariable("EnableSsl"), out bool enableSsl) && enableSsl
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "🚨 Failed to load email settings.");
+                _logger.LogError(ex, "Failed to load email settings.");
                 throw;
             }
         }

@@ -22,13 +22,13 @@ namespace BrainThrust.src.Services.Classes
         public async Task<List<LearningProgressDto>> GetUserProgress(int userId, int subjectId)
         {
             var progress = await _progressRepository.GetUserProgress(userId, subjectId);
-            return LearningProgressMapper.ToDTOList(progress);
+            return LearningProgressMapper.ToLearningProgressDtoList(progress);
         }
 
         public async Task<LearningProgressDto?> GetLastVisitedLesson(int userId)
         {
             var lastLesson = await _progressRepository.GetLastVisitedLesson(userId);
-            return LearningProgressMapper.ToDTO(lastLesson);
+            return LearningProgressMapper.ToLearningProgressDto(lastLesson);
         }
     }
 }

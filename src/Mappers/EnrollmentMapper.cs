@@ -11,17 +11,17 @@ namespace BrainThrust.src.Mappers
             {
                 UserId = enrollment.UserId,
                 SubjectId = enrollment.SubjectId,
-                SubjectTitle = enrollment.Subject?.Title,
+                SubjectTitle = enrollment.Subject.Title,
                 UserFirstName = $"{enrollment.User.FirstName} {enrollment.User.LastName}".Trim()
             };
         }
 
-        public static Enrollment ToEnrollment(CreateEnrollmentDto dto, int userId)
+        public static Enrollment ToEnrollment(CreateEnrollmentDto createEnrollmentDto, int userId)
         {
             return new Enrollment
             {
                 UserId = userId,
-                SubjectId = dto.SubjectId
+                SubjectId = createEnrollmentDto.SubjectId
             };
         }
     }

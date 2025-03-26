@@ -3,9 +3,9 @@ namespace BrainThrust.src.Dtos.LessonDtos
     public class GetLessonDto
     {
         public int Id { get; set; }
-        public required string Title { get; set; }
-        public required string Content { get; set; }
-        public required string VideoUrl { get; set; }
+        public string? Title { get; set; }
+        public string? Content { get; set; }
+        public string? VideoUrl { get; set; }
         public int TopicId { get; set; }
     }
 

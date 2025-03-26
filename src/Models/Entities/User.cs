@@ -7,21 +7,21 @@ namespace BrainThrust.src.Models.Entities
 
         [Required]
         [MaxLength(50)]
-        public required string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public required string LastName { get; set; }
+        public string? LastName { get; set; }
 
         [Required]
         [EmailAddress]
-        public required string Email { get; set; }
+        public string? Email { get; set; }
 
         [Required]
-        public required byte[] PasswordHash { get; set; }
+        public byte[]? PasswordHash { get; set; }
 
         [Required]
-        public required byte[] PasswordSalt { get; set; }
+        public byte[]? PasswordSalt { get; set; }
 
         public string Role { get; set; } = "User";
 
@@ -30,7 +30,6 @@ namespace BrainThrust.src.Models.Entities
 
         public string? PasswordResetToken { get; set; }
         public DateTime? TokenExpiry { get; set; }
-        // Define relationship with Enrollment
         public List<Enrollment>? Enrollments { get; set; } = new List<Enrollment>();
         public ICollection<UserQuizSubmission>? QuizSubmissions { get; set; }
 

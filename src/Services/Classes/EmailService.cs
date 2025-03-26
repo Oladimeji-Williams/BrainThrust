@@ -13,9 +13,9 @@ namespace BrainThrust.src.Services.Classes
         public EmailService(EmailSettingsProvider settingsProvider, ILogger<EmailService> logger)
         {
             _logger = logger;
-            _emailSettings = settingsProvider.LoadEmailSettings();  // ✅ Load settings from provider
+            _emailSettings = settingsProvider.LoadEmailSettings();
         }
-        public string FromEmail => _emailSettings.FromEmail;  // ✅ Expose FromEmail
+        public string FromEmail => _emailSettings.FromEmail;
         
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
@@ -26,7 +26,7 @@ namespace BrainThrust.src.Services.Classes
 
             try
             {
-                using (var client = new System.Net.Mail.SmtpClient(_emailSettings.SmtpServer, _emailSettings.Port))  // ✅ Explicitly use System.Net.Mail
+                using (var client = new System.Net.Mail.SmtpClient(_emailSettings.SmtpServer, _emailSettings.Port))
                 {
                     client.Credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
                     client.EnableSsl = _emailSettings.EnableSsl;
@@ -51,7 +51,6 @@ namespace BrainThrust.src.Services.Classes
             }
         }
 
-        // ✅ Implement Missing Methods from IEmailService
         public async Task SendPasswordResetEmail(string email, string resetLink)
         {
             string subject = "Password Reset Request";

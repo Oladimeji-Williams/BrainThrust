@@ -1,5 +1,4 @@
 using BrainThrust.src.Models.Entities;
-using System.Threading.Tasks;
 
 namespace BrainThrust.src.Services.Interfaces
 {

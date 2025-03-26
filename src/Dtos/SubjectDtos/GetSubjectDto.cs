@@ -1,5 +1,3 @@
-using BrainThrust.src.Dtos.TopicDtos;
-
 namespace BrainThrust.src.Dtos.SubjectDtos
 {
     public class GetSubjectDto

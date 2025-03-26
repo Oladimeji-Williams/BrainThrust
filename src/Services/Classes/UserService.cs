@@ -14,7 +14,7 @@ namespace BrainThrust.src.Services.Classes
             _context = context;
         }
 
-        public async Task<User> GetAuthenticatedUserAsync(ClaimsPrincipal user)
+        public async Task<User?> GetAuthenticatedUserAsync(ClaimsPrincipal user)
         {
             var email = user.FindFirst(ClaimTypes.Email)?.Value;
             if (string.IsNullOrEmpty(email)) return null;
@@ -25,7 +25,7 @@ namespace BrainThrust.src.Services.Classes
         public int? GetLoggedInUserId(ClaimsPrincipal user)
         {
             var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return int.TryParse(userIdClaim, out int userId) ? userId : (int?)null;
+            return int.TryParse(userIdClaim, out int userId) ? userId : null;
         }
     }
 }
