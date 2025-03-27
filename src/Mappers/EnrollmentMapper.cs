@@ -11,8 +11,8 @@ namespace BrainThrust.src.Mappers
             {
                 UserId = enrollment.UserId,
                 SubjectId = enrollment.SubjectId,
-                SubjectTitle = enrollment.Subject.Title,
-                UserFirstName = $"{enrollment.User.FirstName} {enrollment.User.LastName}".Trim()
+                SubjectTitle = enrollment.Subject?.Title ?? "Unknown",
+                UserFirstName = $"{enrollment.User?.FirstName ?? ""} {enrollment.User?.LastName ?? ""}".Trim()
             };
         }
 

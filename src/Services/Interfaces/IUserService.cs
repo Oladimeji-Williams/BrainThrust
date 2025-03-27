@@ -7,5 +7,6 @@ namespace BrainThrust.src.Services.Interfaces
     {
         Task<User?> GetAuthenticatedUserAsync(ClaimsPrincipal user);
         int? GetLoggedInUserId(ClaimsPrincipal user);
+        Task<bool> IsUserAdmin(ClaimsPrincipal user);
     }
 }

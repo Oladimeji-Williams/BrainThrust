@@ -14,3 +14,4 @@ namespace BrainThrust.src.Dtos.ReportDtos
         public QuizPerformanceDto? QuizPerformance { get; set; }
     }
 }
+

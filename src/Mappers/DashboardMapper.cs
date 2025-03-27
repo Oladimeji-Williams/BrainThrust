@@ -8,8 +8,9 @@ namespace BrainThrust.src.Mappers
             int totalUsers, int activeUsers, int newUsers,
             int totalSubjects, int totalTopics, int totalLessons, int totalQuizzes,
             int completedSubjects, int completedTopics, int completedLessons, int completedQuizzes,
-            int activeLearners, 
-            List<(int SubjectId, int Enrollments)> mostEnrolledSubjects,
+            int activeLearners,
+            int uniqueQuizzesAttempted, 
+            List<MostEnrolledSubjectDto> mostEnrolledSubjects,
             List<(int UserId, int QuizId, int TotalScore, bool IsPassed, DateTime Created)> recentQuizAttempts,
             List<(int UserId, double TotalScore)> topScorers)
         {
@@ -38,11 +39,8 @@ namespace BrainThrust.src.Mappers
                 Engagement = new EngagementStatsDto
                 {
                     ActiveLearners = activeLearners,
-                    MostEnrolledSubjects = mostEnrolledSubjects?.Select(s => new MostEnrolledSubjectDto 
-                    { 
-                        SubjectId = s.SubjectId, 
-                        Enrollments = s.Enrollments 
-                    }).ToList() ?? new List<MostEnrolledSubjectDto>()
+                    MostEnrolledSubjects = mostEnrolledSubjects ?? new List<MostEnrolledSubjectDto>()
+                    
                 }
             };
         }

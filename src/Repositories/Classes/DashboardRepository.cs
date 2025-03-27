@@ -21,18 +21,26 @@ namespace BrainThrust.src.Repositories.Classes
         public async Task<int> GetTotalLessons() => await _context.Lessons.CountAsync();
         public async Task<int> GetTotalQuizzes() => await _context.Quizzes.CountAsync();
 
-
         public async Task<List<MostEnrolledSubjectDto>> GetMostEnrolledSubjects()
         {
             return await _context.Enrollments
                 .GroupBy(e => e.SubjectId)
-                .OrderByDescending(g => g.Count())
-                .Take(5)
-                .Select(g => new MostEnrolledSubjectDto
+                .Select(g => new
                 {
                     SubjectId = g.Key,
                     Enrollments = g.Count()
                 })
+                .OrderByDescending(g => g.Enrollments)
+                .Take(5)
+                .Join(_context.Subjects,
+                    e => e.SubjectId,
+                    s => s.Id,
+                    (e, s) => new MostEnrolledSubjectDto
+                    {
+                        SubjectId = e.SubjectId,
+                        SubjectName = s.Title,
+                        Enrollments = e.Enrollments
+                    })
                 .ToListAsync();
         }
 
@@ -98,10 +106,32 @@ namespace BrainThrust.src.Repositories.Classes
                 .CountAsync();
         }
 
+        public async Task<int> GetQuizzes(int userId)
+        {
+            return await _context.UserQuizAttempts
+                .Where(uq => uq.UserId == userId && uq.IsPassed)
+                .CountAsync();
+        }
+
+        public async Task<int> GetTotalQuizAttempts(int userId)
+        {
+            return await _context.UserQuizAttempts
+                .Where(uq => uq.UserId == userId)
+                .CountAsync();
+        }
         public async Task<int> GetCompletedQuizzes(int userId)
         {
             return await _context.UserQuizAttempts
                 .Where(uq => uq.UserId == userId && uq.IsPassed)
+                .CountAsync();
+        }
+
+        public async Task<int> GetUniqueQuizzesAttempted(int userId)
+        {
+            return await _context.UserQuizAttempts
+                .Where(uq => uq.UserId == userId)
+                .Select(uq => uq.QuizId)
+                .Distinct()
                 .CountAsync();
         }
 

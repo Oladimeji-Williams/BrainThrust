@@ -18,5 +18,9 @@ namespace BrainThrust.src.Repositories.Interfaces
         Task<int> GetCompletedTopics(int userId);
         Task<int> GetCompletedLessons(int userId);
         Task<int> GetCompletedQuizzes(int userId);
+        Task<int> GetUniqueQuizzesAttempted(int userId);
+        Task<int> GetTotalQuizAttempts(int userId);
+
+
     }
 }

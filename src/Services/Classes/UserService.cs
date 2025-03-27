@@ -27,5 +27,14 @@ namespace BrainThrust.src.Services.Classes
             var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return int.TryParse(userIdClaim, out int userId) ? userId : null;
         }
+        public async Task<bool> IsUserAdmin(ClaimsPrincipal user)
+        {
+            var userId = GetLoggedInUserId(user);
+            if (userId == null) return false;
+
+            var userEntity = await _context.Users.FindAsync(userId.Value);
+            return userEntity != null && userEntity.Role == "Admin";
+        }
+
     }
 }
